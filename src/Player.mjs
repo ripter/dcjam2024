@@ -1,4 +1,4 @@
-import { Camera, Vector3 } from 'three';
+import { Camera, Vector3 } from '/libs/three.module.js';
 import { degToRad } from 'three/math/MathUtils.js';
 import { Level } from './Level.mjs';
 

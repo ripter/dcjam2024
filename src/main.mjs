@@ -3,8 +3,7 @@ import {
   PerspectiveCamera, 
   Scene, 
   WebGLRenderer, 
-} from 'three';
-import { loadModel } from './loadModel.mjs';
+} from '/libs/three.module.js';
 import { Level } from './Level.mjs';
 import { Player } from './Player.mjs';
 import { UI } from './UI.mjs';
