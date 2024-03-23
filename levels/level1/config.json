@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "gridWidth": "10",
+  "gridHeight": "10",
+  "map": [
+    2,2,2,2,2,2,2,2,2,2,
+    2,1,1,1,2,1,2,1,1,2,
+    2,1,1,1,1,1,1,1,1,2,
+    2,1,1,1,2,1,2,1,1,2,
+    2,2,2,2,2,1,2,1,1,2,
+    2,1,1,1,2,1,2,1,1,2,
+    2,1,1,1,2,1,2,2,1,2,
+    2,1,1,1,1,1,2,1,1,2,
+    2,1,1,1,2,1,2,1,1,2,
+    2,2,2,2,2,2,2,2,2,2
+  ],
+  "setPieces": {
+    "2,3" : {
+      "type": "spawn",
+      "who": "player"
+    }
+  },
+  "defs": {
+    "1": {
+      "model": "assets/models/tile.glb",
+      "sprite": "assets/sprites/tile1.webp"
+    },
+    "2": {
+      "model": "assets/models/wall.glb",
+      "sprite": "assets/sprites/wall1.webp",
+      "impassable": true
+    }, 
+    "player": {
+      "sprite": "assets/sprites/player.webp"
+    }
+  }
+}
