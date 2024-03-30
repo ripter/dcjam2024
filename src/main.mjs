@@ -6,7 +6,7 @@ import {
 } from '/libs/three.module.js';
 import { Level } from './Level.mjs';
 import { Player } from './Player.mjs';
-import { UI } from './UI.mjs';
+import { UI } from './UI/index.mjs';
 
 
 //

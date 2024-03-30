@@ -3,7 +3,7 @@ import {
   Container,
   Graphics,
   Sprite,
-} from '../libs/pixi.min.mjs';
+} from '../../libs/pixi.min.mjs';
 
 export class Minimap {
   #level;
@@ -16,20 +16,6 @@ export class Minimap {
     this.scene.addChild(this.mask);
     this.scene.addChild(this.tileMap);
     this.scene.addChild(this.background);
-
-  }
-
-  get width() {
-    return this.scene.width;
-  }
-  set width(value) {
-    this.scene.width = value;
-  }
-  get height() {
-    return this.scene.height;
-  }
-  set height(value) {
-    this.scene.height = value;
   }
 
   get position() {

@@ -11,6 +11,16 @@ python3 -m http.server
 ```
 
 
+## Architecture
+
+The archtiecture is based on Composite Classes. *Da Fuq is dat?*
+
+**Level Class** is a data class that holds everything needed to play a level along with helper methods for working with the data.
+
+**UI Class** manages the 2D User Interface for the game.
+
+
+
 ## Tech Stack
 
 * Three.JS for the 3D engine  

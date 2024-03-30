@@ -2,7 +2,7 @@ import {
   Application, 
   Assets,
   Sprite,
-} from '../libs/pixi.min.mjs';
+} from '../../libs/pixi.min.mjs';
 import { Minimap } from './Minimap.mjs';
 
 export class UI {
