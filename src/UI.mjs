@@ -25,24 +25,6 @@ export class UI {
     this.#player = player;
     this.app = new Application();
     this.miniMap = new Minimap(level);
-    // this.miniMap = {
-    //   root: new Container(),
-    //   mask: new Graphics(),
-    //   tileMap: new Container(),
-    //   background: new Graphics(),
-    //   playerSprite: null,
-    // };
-    // this.miniMap.root.addChild(
-    //   this.miniMap.background,
-    //   this.miniMap.tileMap,
-    //   this.miniMap.mask,
-    //   // this.miniMap.playerSprite,
-    // );
-    // this.app.stage.addChild(this.miniMap.root);
-    // this.miniMap.root.addChild(this.miniMap.background);
-    // this.miniMap.root.addChild(this.miniMap.tileMap);
-    // this.miniMap.root.addChild(this.miniMap.mask);
-    // this.miniMap.root.addChild(this.miniMap.playerSprite);
     // Event listeners
     window.addEventListener('resize', this.resizeAndRerender.bind(this));
   }
@@ -69,12 +51,7 @@ export class UI {
     window.gameBody.appendChild(this.app.canvas);
 
     // Initalize the minimap and add it to the UI
-    await this.miniMap.init(
-      this.screenWidth / 5,
-      this.screenHeight / 5,
-    );
-    this.miniMap.scene.x = this.screenWidth - this.miniMap.width - this.miniMap.padding;
-    this.miniMap.scene.y = this.miniMap.padding;
+    await this.miniMap.init();
     this.app.stage.addChild(this.miniMap.scene);
 
     // Resize and Render the UI
@@ -112,25 +89,19 @@ export class UI {
    * Resizes the UI and re-renders the UI.
    */
   resizeAndRerender() {
+    console.log('Resize and Rerender the UI')
+    // tell Pixi to resize
     this.app.resize();
-    console.log('Resizing UI')
-    // Re-calculate the size of things based on the new size
-    const { screenWidth: width, screenHeight: height } = this;
 
-  this.miniMap.resize(width / 5, height / 5);
-    // const miniMapWidth = width / 5;
-    // const miniMapHeight = height / 5;
+    const miniMapWidth = 0|(this.screenWidth / 5);
+    const miniMapHeight = 0|(this.screenHeight / 5);
+    const miniMapPadding = Math.min(miniMapWidth, miniMapHeight) / 10;
 
-    // this.miniMap = {
-    //   ...this.miniMap,
-    //   miniMapWidth,
-    //   miniMapHeight,
-    //   padding: (width * 0.025),
-    //   lineWidth: 0|(width * 0.0025),
-    //   tileSize: Math.min(miniMapWidth, miniMapHeight) / 4,
-    // };
-    // this.updateMiniMap();
-
+    this.miniMap.resize(miniMapWidth, miniMapHeight);
+    this.miniMap.position.set(
+      this.screenWidth - miniMapWidth - miniMapPadding, 
+      miniMapPadding
+    );
   }
 
   /**

@@ -14,7 +14,7 @@ python3 -m http.server
 ## Tech Stack
 
 * Three.JS for the 3D engine  
-* Pixi.JS for the 2D UI.
+* [PixiJS](https://pixijs.download/release/docs/index.html) for the 2D UI.
 * Blender for 3D models.
 * Pixelmator Pro for 2D images.
 
