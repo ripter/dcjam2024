@@ -116,6 +116,8 @@ export class UI {
     console.log('Resizing UI')
     // Re-calculate the size of things based on the new size
     const { screenWidth: width, screenHeight: height } = this;
+
+  this.miniMap.resize(width / 5, height / 5);
     // const miniMapWidth = width / 5;
     // const miniMapHeight = height / 5;
 
