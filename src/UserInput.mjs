@@ -1,8 +1,12 @@
 import { Camera, Vector3 } from '/libs/three.module.js';
 import { degToRad } from 'three/math/MathUtils.js';
 import { Level } from './Level.mjs';
+import { Entity } from './Entity.mjs';
 
-export class Player {
+/**
+ * Main class for handling user input.
+ */
+export class UserInput {
   #level;
   #camera;
 
@@ -12,6 +16,7 @@ export class Player {
    * @param {Level} level 
    */
   constructor(camera, level) {
+    super();
     this.#level = level;
     this.#camera = camera;
     document.addEventListener('keydown', this);

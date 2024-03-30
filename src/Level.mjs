@@ -10,7 +10,10 @@ const DEFAULT_DEF_VALUES = {
   impassable: false,
 }
 
-
+/**
+ * The Level is the main data container for an active game.
+ * It contains the map, set pieces, and definitions for the game.
+ */
 export class Level {
   /**
    * Loads a level from the given URL.
@@ -36,30 +39,6 @@ export class Level {
     return parseInt(this.config.gridHeight, 10);
   }
 
-  /**
-   * Load the models from the level definitions.
-   */
-  async loadDefs() {
-    const { defs } = this.config;
-    const defIds = Object.keys(defs);
-
-    // Create an array of promises for loading all the models
-    const loadPromises = defIds.map(async (key) => {
-      const def = defs[key];
-      const model = def.model && await loadModel(def.model);
-      this.defs.set(key.toString(), {
-        // Default Values
-        ...DEFAULT_DEF_VALUES,
-        // Config Values
-        ...def,
-        // Model Values
-        model,
-      });
-    });
-
-    // Wait for all models to load
-    return await Promise.all(loadPromises);
-  }
 
   /**
    * Returns the tile at the given position.
@@ -163,6 +142,35 @@ export class Level {
   }
 
   
+
+  /**
+   * Load the models from the level definitions.
+   * Asset Definitions from the config are hydrated with default values.
+   * Assets used by Three.JS are loaded and cached here.
+   * Assets used by PIXI.js are loaded and cached in the PIXI loader.
+   */
+  async loadDefs() {
+    const { defs } = this.config;
+    const defIds = Object.keys(defs);
+
+    // Create an array of promises for loading all the models
+    const loadPromises = defIds.map(async (key) => {
+      const def = defs[key];
+      const model = def.model && await loadModel(def.model);
+      this.defs.set(key.toString(), {
+        // Default Values
+        ...DEFAULT_DEF_VALUES,
+        // Config Values
+        ...def,
+        // Model Values
+        model,
+      });
+    });
+
+    // Wait for all models to load
+    return await Promise.all(loadPromises);
+  }
+
 
   /**
    * Loads the Level from a config file.
