@@ -63,15 +63,20 @@ export class Level {
 
 
   addEntity(entity) {
+    entity.level = this; // Set the circular reference.
     this.#entities.push(entity);
     this.dirtyEntities.add(entity);
   }
   removeEntity(entity) {
+    delete entity.level; // Remove the circular reference.
     const index = this.#entities.indexOf(entity);
     if (index >= 0) {
       this.#entities.splice(index, 1);
     }
     this.dirtyEntities.delete(entity);
+  }
+  setDirty(entity) {
+    this.dirtyEntities.add(entity);
   }
 
   /**

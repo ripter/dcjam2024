@@ -21,6 +21,7 @@ export class Engine {
     this.camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
     this.cameraRig = new Group();
     this.camera.position.set(0, 1, 0);
+    // this.camera.lookAt(1, 1, 0);
     this.cameraRig.add(this.camera);
     this.scene.add(this.cameraRig);
     // Renderer
@@ -54,16 +55,6 @@ export class Engine {
     const light = new HemisphereLight(0xffffff, 0x444444);
     light.position.set(1, 1, 1);
     this.scene.add(light);
-
-    //
-    // Move the Camera to a random spawn point
-    // const spawnPoint = level.getRandomEntityByType('spawn-player');
-    // const { x: spawnX, y: spawnY } = spawnPoint.tilePosition;
-    // const lookPosition = spawnPoint.positionInFront();
-    // const { x: lookX, y: lookY } = lookPosition;
-    // this.cameraRig.position.set(spawnX, 0, spawnY);
-    // this.cameraRig.lookAt(lookX, 0, lookY);
-    this.cameraRig.position.set(0, 0, 0);
   }
 
   /**
@@ -72,21 +63,14 @@ export class Engine {
   async update() {
     // Update dirty entities
     for (const entity of this.#level.dirtyEntities) {
-      console.log('Updating dirty', entity);
-    }
-    // Move the Camera to the Player's position
-    const player = this.#level.getEntityByType('player');
-    if (player) {
-      const { x, y } = player.tilePosition;
-      const lookPosition = player.positionInFront();
+      const { x, y } = entity.tilePosition;
+      const lookPosition = entity.positionInFront();
       const { x: lookX, y: lookY } = lookPosition;
 
-      if (this._lookAtX !== lookX || this._lookAtY !== lookY) {
-        console.log('Moving Camera to look at', player.direction, {lookX, lookY}, 'from', {x, y})
-        this._lookAtX = lookX;
-        this._lookAtY = lookY;
+      // TODO: Hide the camera stuff in the player entity
+      if (entity.type === 'player') {
         this.cameraRig.position.set(x, 0, y);
-        this.cameraRig.lookAt(lookX, 0, lookY);
+        this.camera.lookAt(lookX, 1, lookY);
       }
     }
 

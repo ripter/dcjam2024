@@ -51,44 +51,36 @@ export class UserInput {
       // Forward in the direction the camera is facing
       case 'ArrowUp':
       case 'w':
-        console.log('Forward in', player.direction)
-        newPosition = player.positionInFront();
+        event.preventDefault();
+        player.moveForward();
         break;
       // Backward from the direction the camera is facing
       case 'ArrowDown':
       case 's':
-        console.log('Backward in', player.direction)
-        // player.direction = DIRECTION.SOUTH;
-        newPosition = player.positionBehind();
-        // if ([DIRECTION.NORTH, DIRECTION.SOUTH].includes(player.direction)) {
-        //   newPosition.y -= 1;
-        // } else if ([DIRECTION.EAST, DIRECTION.WEST].includes(player.direction)) {
-        //   newPosition.x -= 1;
-        // }
+        event.preventDefault();
+        player.moveBackward();
         break;
       // Strafe left
       case 'ArrowLeft':
       case 'a':
-        newPosition = player.tilePosition;
-        newPosition.x -= 1;
+        event.preventDefault();
+        player.moveLeft();
         break;
       // Strafe right
       case 'ArrowRight':
       case 'd':
-        newPosition = player.tilePosition;
-        newPosition.x += 1;
+        event.preventDefault();
+        player.moveRight();
         break;
       // Rotate left
       case 'q':
-        // Rotate left
-        player.direction = rotateDirection(player.direction, -1);
-        console.log('new direction', player.direction)
+        event.preventDefault();
+        player.rotateLeft();
         break;
       // Rotate right
       case 'e':
-        // Rotate right
-        player.direction = rotateDirection(player.direction, 1);
-        console.log('new direction', player.direction)
+        event.preventDefault();
+        player.rotateRight();
         break;
     }
 
