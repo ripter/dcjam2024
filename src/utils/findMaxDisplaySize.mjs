@@ -4,6 +4,7 @@
  * @param {number} aspectRatio 
  */
 export function findMaxDisplaySize(aspectRatio) {
+  if (!aspectRatio) { throw new Error('Aspect Ratio is required'); }
   let width = window.innerWidth;
   let height = window.innerHeight;
 

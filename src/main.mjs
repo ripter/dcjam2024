@@ -23,7 +23,7 @@ window.level = level; // for debugging
 
 //
 // Create the 3D Engine
-const engine = new Engine(level, aspectRatio);
+const engine = new Engine(level, aspectRatio, window.gameBody);
 window.engine = engine; // for debugging
 await engine.init();
 
@@ -38,63 +38,20 @@ window.ui = ui; // for debugging
 const userInput = new UserInput(level);
 window.userInput = userInput; // for debugging
 
-
-// Create the Player
-// const player = new UserInput(camera, level);
-// window.player = player;
-
-
-
-
-
-
-// Create the UI
-// const ui = new UI(level, player);
-// await ui.init();
-// window.ui = ui;
-
-
-
+//
+// Animation Loop
 async function animateLoop() {
-    requestAnimationFrame(animateLoop);
-
+  try {
     await engine.update();
     await ui.update();
 
-    // Render the scene
-    // renderer.render(scene, camera);
+    level.endTick();
+    requestAnimationFrame(animateLoop);
+  }
+  catch (error) {
+    console.log('%cError in animateLoop', 'color: red;font-size: 2em;')
+    console.error(error);
+  }
 }
-
 // Start the Animation Loop
 animateLoop();
-
-
-// function resizeGame() {
-//   const { width, height } = calculateSize();
-//   window.gameBody.style.width = `${width}px`;
-//   window.gameBody.style.height = `${height}px`;
-//   renderer.setSize(width, height);
-//   camera.aspect = width / height;
-//   camera.updateProjectionMatrix();
-// }
-
-
-// Calculate the largest 5:3 aspect ratio dimensions that fit entirely in the current screen
-// function calculateSize() {
-//   let width = window.innerWidth;
-//   let height = window.innerHeight;
-//   const aspectRatio = 5 / 3;
-
-//   // Adjust width and height based on the aspect ratio
-//   if (width / height > aspectRatio) {
-//       // Window is too wide
-//       width = height * aspectRatio;
-//   } else {
-//       // Window is too tall
-//       height = width / aspectRatio;
-//   }
-
-//   return { width, height };
-// }
-
-

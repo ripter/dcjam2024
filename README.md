@@ -12,16 +12,25 @@ python3 -m http.server
 
 
 ## Architecture
+Core Classes and Their Roles
+#### Level Class
 
-The archtiecture is based on Composite Classes. *Da Fuq is dat?*
+The Level Class instance in the source of truth for a running game.
 
-**Level Class** is a data class that holds everything needed to play a level along with helper methods for working with the data.
 
-**UI Class** manages the 2D User Interface (Powered by PIXI.js) for the game.
+#### Engine Class
 
-**Engine Class** manages the 3D gameplay (Powered by Three.JS).
+The Engine Class instance handles the 3D using Three.JS
 
-**Player Class** manages the User Input and Camera.
+
+#### UI Class
+
+The UI Class instance handles the game UI using PIXI.js
+
+#### UserInput Class
+
+The UserInput class instance captures and processes user inputs and updates the Level instance.
+
 
 
 

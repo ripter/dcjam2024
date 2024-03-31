@@ -1,6 +1,5 @@
-import { Group, SphereGeometry, MeshBasicMaterial, Mesh, Vector3, Vector2 } from 'three';
+import { Vector3 } from 'three';
 import { loadModel } from './loadModel.mjs';
-import { xyToIndex } from './xyToIndex.mjs';
 
 
 // Default values for a tile definitions
@@ -15,153 +14,78 @@ const DEFAULT_DEF_VALUES = {
  * It contains the map, set pieces, and definitions for the game.
  */
 export class Level {
+  #config;
   /**
    * Loads a level from the given URL.
    * @param {string} url 
    */
   constructor(config) {
-    this.config = {
-      extends: null,
+    this.#config = {
       ...config,
+      gridWidth: parseInt(config.gridWidth, 10),
+      gridHeight: parseInt(config.gridHeight, 10),
     };
-    this.scene = new Group();
-    this.defs = new Map();
-    this.map = config.map.map(id => id.toString());
-
-    // Show the grid center points across the level
-    // this.addCenterPoints();
+    // Make sure all the tileIds are strings.
+    this.floorMap = config.floorMap.map(tileId => tileId.toString());
+    // Create a Map to store the asset definitions
+    this.definitions = new Map();
+    // Entities that changed during the tick are stored here. 
+    this.dirtyEntities = new Set();
   }
 
   get widthInTiles() {
-    return parseInt(this.config.gridWidth, 10);
+    return this.#config.gridWidth;
   }
   get heightInTiles() {
-    return parseInt(this.config.gridHeight, 10);
+    return this.#config.gridHeight;
   }
 
+  get entities() {
+    return this.#config.entities;
+  }
+
+  getEntitiesByType(type) {
+    return this.entities.filter(entity => entity.type === type);
+  }
+  getRandomEntityByType(type) {
+    const entities = this.getEntitiesByType(type);
+    return entities[Math.floor(Math.random() * entities.length)];
+  }
+
+  indexToXY(index) {
+    const { widthInTiles: width } = this;
+    const x = index % width;
+    const y = Math.floor(index / width);
+    return { x, y };
+  }
 
   /**
-   * Returns the tile at the given position.
-   * Uses the x and z coordinates to find the tile ID.
-   * @param {Vector3} position 
+   * Ends the Tick and clears the dirty entities.
    */
-  getTileBy3DPosition(position) {
-    const { widthInTiles: width, heightInTiles: height } = this;
-    const { map } = this;
-    const x = Math.floor(position.x);
-    const z = Math.floor(position.z);
-    // If the position is outside the grid, return null
-    if (x < 0 || x >= width || z < 0 || z >= height) {
-      return null;
-    }
-    const tileId = map[xyToIndex(width, x, z)];
-    const def = this.defs.get(tileId);
-    return {
-      id: tileId,
-      ...def,
-    };
+  endTick() {
+    this.dirtyEntities.clear();
   }
 
-  getTileBy2DPosition(x, y) {
-    return this.getTileBy3DPosition(new Vector3(x, 0, y));
-  }
+
 
   /**
-   * Finds a set piece that matches the given criteria. 
-   * Example: Find the Player Spawn Point with `{type: 'spawn', who: 'player'}`
-   * @param {Object} criteria 
-   * @returns 
-   */
-  findSetPiece(criteria) {
-    const { setPieces } = this.config;
-
-    // Loop through each key-value pair in the set pieces
-    for (const [key, value] of Object.entries(setPieces)) {
-      // Assume the set piece matches until proven otherwise
-      let matches = true;
-
-      // Check each key-value pair in the criteria
-      for (const [critKey, critValue] of Object.entries(criteria)) {
-        // If the set piece doesn't have the property or it doesn't match, mark as not a match
-        if (value[critKey] !== critValue) {
-          matches = false;
-          break; // Exit the inner loop early since this set piece doesn't match
-        }
-      }
-
-      // If all criteria matched, return the set piece
-      const keyAsNumbers = key.split(',').map(Number);
-      const keyAsVectors = new Vector2(...keyAsNumbers);
-      
-      if (matches) {
-        return { key, position: keyAsVectors, ...value };
-      }
-    }
-
-    // Return null if no matching set piece was found
-    return null;
-  }
-
-  /**
-   * Add the center points of the grid to the scene.
-   */
-  addCenterPoints() {
-    const { widthInTiles: width, heightInTiles: height } = this;
-    for (let x = 0; x < width; x++) {
-      for (let z = 0; z < height; z++) {
-        const point = this.createPoint({ x: x, y: 0, z: z});
-        this.scene.add(point);
-      }
-    }
-  }
-
-  createPoint({x, y, z}) {
-    const geometry = new SphereGeometry(0.05, 32, 16);
-    const material = new MeshBasicMaterial({ color: 0xffff00 });
-    const sphere = new Mesh(geometry, material); 
-    sphere.position.set(x, y, z);
-    return sphere;
-  }
-
-
-  addMapMesh() {
-    const { widthInTiles: width, heightInTiles: height } = this;
-    const { map } = this;
-
-    for (let x = 0; x < width; x++) {
-      for (let z = 0; z < height; z++) {
-        const index = xyToIndex(width, x, z);
-        const defID = map[index];
-        if (!defID) continue;
-        const def = this.defs.get(defID.toString());
-        const model = def.model.clone();
-        model.position.set(x, 0, z);
-        this.scene.add(model);
-      }
-    }
-  }
-
-  
-
-  /**
-   * Load the models from the level definitions.
    * Asset Definitions from the config are hydrated with default values.
    * Assets used by Three.JS are loaded and cached here.
    * Assets used by PIXI.js are loaded and cached in the PIXI loader.
    */
-  async loadDefs() {
-    const { defs } = this.config;
+  async loadAssets() {
+    const { defs } = this.#config;
     const defIds = Object.keys(defs);
 
     // Create an array of promises for loading all the models
     const loadPromises = defIds.map(async (key) => {
-      const def = defs[key];
-      const model = def.model && await loadModel(def.model);
-      this.defs.set(key.toString(), {
+      const assetDefinition = defs[key];
+      const model = assetDefinition.model && await loadModel(assetDefinition.model);
+      this.definitions.set(key.toString(), {
         // Default Values
         ...DEFAULT_DEF_VALUES,
         // Config Values
-        ...def,
+        ...assetDefinition,
         // Model Values
         model,
       });
@@ -183,11 +107,9 @@ export class Level {
       const response = await fetch(url);
       const data = await response.json();
       const level = new Level(data);
-      // Load the definitions for the level. These are defined in the config.
-      await level.loadDefs();
-
-      level.addMapMesh();
-
+      
+      // Load the assets for the level
+      await level.loadAssets();
       return level;
     }
     catch (error) {
