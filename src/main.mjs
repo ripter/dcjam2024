@@ -9,6 +9,8 @@ import { UserInput } from './UserInput.mjs';
 import { UI } from './UI/index.mjs';
 import { Engine } from './Engine/index.mjs';
 
+const aspectRatio = 5 / 3;
+
 //
 // Load the Level
 // Level is specified in the URL query string, e.g. ?level=level001
@@ -21,8 +23,9 @@ window.level = level; // for debugging
 
 //
 // Create the 3D Engine
-const engine = new Engine(level);
+const engine = new Engine(level, aspectRatio);
 window.engine = engine; // for debugging
+await engine.init();
 
 
 //
@@ -37,26 +40,13 @@ window.userInput = userInput; // for debugging
 
 
 // Create the Player
-// const camera = new PerspectiveCamera(75, 5/3, 0.1, 1000);
 // const player = new UserInput(camera, level);
 // window.player = player;
 
 
-//
-// Create the renderer
-// const renderer = new WebGLRenderer();
-// renderer.domElement.id = 'main-canvas';
-// window.gameBody.appendChild(renderer.domElement);
-
-// Resize the game when the window is resized
-// resizeGame();
-// window.addEventListener('resize', resizeGame);
 
 
-// const scene = new Scene();
-// // Add the Level to the scene.
-// level.scene.position.set(0, 0, 0);
-// scene.add(level.scene);
+
 
 // Create the UI
 // const ui = new UI(level, player);
@@ -64,16 +54,15 @@ window.userInput = userInput; // for debugging
 // window.ui = ui;
 
 
-// Add some light
-// const light = new HemisphereLight(0xffffff, 0x444444);
-// light.position.set(1, 1, 1);
-// scene.add(light);
 
-function animateLoop() {
+async function animateLoop() {
     requestAnimationFrame(animateLoop);
-    ui.update();
+
+    await engine.update();
+    await ui.update();
+
     // Render the scene
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
 }
 
 // Start the Animation Loop
