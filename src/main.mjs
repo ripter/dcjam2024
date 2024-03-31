@@ -32,7 +32,7 @@ await engine.init();
 // Create the 2D UI
 const ui = new UI(level);
 window.ui = ui; // for debugging
-// await ui.init();
+await ui.init();
 
 //
 // Hanlde User Input

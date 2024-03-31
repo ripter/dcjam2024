@@ -1,3 +1,4 @@
+import { Vector2 } from 'three';
 import { 
   Assets,
   Container,
@@ -23,8 +24,20 @@ export class Minimap {
   }
 
   async init() {
-    // Read the level and create the minimap tiles
-    await this.addTiles();
+    // Create Sprites for each floor tile
+    const loadPromises = this.#level.floorMap.map(async (tileId, index) => {
+      const definition = this.#level.definitions.get(tileId);
+      const { x, y } = this.#level.indexToXY(index);
+      // Use PIXI Assets to load the texture
+      const texture = await Assets.load(definition.sprite);
+      const sprite = new Sprite(texture);
+      sprite.tilePosition = new Vector2(x, y);
+      this.tileMap.addChild(sprite);
+      return sprite;
+    });
+
+    // Wait for all models to load
+    return await Promise.all(loadPromises);
   }
 
   /**
@@ -61,19 +74,20 @@ export class Minimap {
    * Adds the tiles from level to tileMap.
    * 
    */
-  async addTiles() {
-    const level = this.#level;
+  // async addTiles() {
+    // const level = this.#level;
     // Add each tile in the level to the mini map
-    for (let x = 0; x < level.widthInTiles; x++) {
-      for (let y = 0; y < level.heightInTiles; y++) {
-        const tile = level.getTileBy2DPosition(x, y);
-        const texture = await Assets.load(tile.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
-        const sprite = new Sprite(texture);
-        // sprite.pivot.set(sprite.width / 2, sprite.height / 2);
-        // Save the tile position for later
-        sprite.tilePosition = { x, y };
-        this.tileMap.addChild(sprite);
-      }
-    }
-  }
+    // for (let x = 0; x < level.widthInTiles; x++) {
+    //   for (let y = 0; y < level.heightInTiles; y++) {
+
+    //     const tile = level.getTileBy2DPosition(x, y);
+    //     const texture = await Assets.load(tile.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
+    //     const sprite = new Sprite(texture);
+    //     // sprite.pivot.set(sprite.width / 2, sprite.height / 2);
+    //     // Save the tile position for later
+    //     sprite.tilePosition = { x, y };
+    //     this.tileMap.addChild(sprite);
+    //   }
+    // }
+  // }
 }

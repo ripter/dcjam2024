@@ -15,7 +15,6 @@ export class UI {
    */
   constructor(level, player) {
     this.#level = level;
-    this.#player = player;
     this.app = new Application();
     this.miniMap = new Minimap(level);
     // Event listeners
@@ -64,18 +63,10 @@ export class UI {
 
 
   async update() {
-    if (!this.#player || !this.player) { return; }
-    // Get the Player's position
-    const playerPosition = this.#player.position;
-    // Update the player sprite on the mini map
-    this.player.position.set(playerPosition.x * this.tileSize, playerPosition.z * this.tileSize);
-    // Rotate the player sprite to match the camera
-    this.player.rotation = this.#player.rotation.y * -1;
-    // move the mini map so the player is always in the center
-    // this.miniMap.position.set(
-    //   -playerPosition.x * this.tileSize + this.miniMapContainer.width / 2, // Center horizontally
-    //   -playerPosition.z * this.tileSize + this.miniMapContainer.height / 2 // Center vertically
-    // );
+    // Update dirty entities
+    for (const entity of this.#level.dirtyEntities) {
+      console.log('Update the UI for the entity:', entity);
+    }
   }
 
   /**
