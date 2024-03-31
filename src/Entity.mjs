@@ -1,4 +1,4 @@
-import { Group, Vector2 } from 'three';
+import { Vector2 } from 'three';
 import { DIRECTION } from './consts.mjs';
 
 /**
@@ -16,18 +16,37 @@ export class Entity {
    * @returns {Vector2}
    */
   positionInFront() {
+    // console.log('positionInFront', this.tilePosition, this.direction)
     const { x, y } = this.tilePosition;
     switch (this.direction) {
       case DIRECTION.NORTH: 
-        return new Vector2(x, y - 1);
+        return new Vector2(x, y+1);
       case DIRECTION.SOUTH: 
-        return new Vector2(x, y + 1);
+        return new Vector2(x, y-1);
       case DIRECTION.EAST: 
-        return new Vector2(x + 1, y);
+        return new Vector2(x-1, y);
       case DIRECTION.WEST: 
-        return new Vector2(x - 1, y);
+        return new Vector2(x+1, y);
       default: 
         return new Vector2(x, y);
     }
   }
+
+  positionBehind() {
+    // console.log('positionBehind', this.tilePosition, this.direction)
+    const { x, y } = this.tilePosition;
+    switch (this.direction) {
+      case DIRECTION.NORTH: 
+        return new Vector2(x, y-1);
+      case DIRECTION.SOUTH: 
+        return new Vector2(x, y+1);
+      case DIRECTION.EAST: 
+        return new Vector2(x+1, y);
+      case DIRECTION.WEST: 
+        return new Vector2(x-1, y);
+      default: 
+        return new Vector2(x, y);
+    }
+  }
+
 }

@@ -1,6 +1,7 @@
 import { Camera, Vector3 } from '/libs/three.module.js';
-import { degToRad } from 'three/math/MathUtils.js';
+import { Entity } from './Entity.mjs';
 import { Level } from './Level.mjs';
+import { rotateDirection, DIRECTION } from './consts.mjs';
 
 /**
  * Main class for handling user input.
@@ -16,28 +17,28 @@ export class UserInput {
   constructor(level) {
     this.#level = level;
     document.addEventListener('keydown', this);
-
-    // // Find the spawn point and move us there.
-    // const spSpawnPoint = level.findSetPiece({type: 'spawn', who: 'player'});
-    // if (!spSpawnPoint) {
-    //   throw new Error('No spawn point found!');
-    // }
-    // camera.position.set(spSpawnPoint.position.x, 1, spSpawnPoint.position.y);
   }
 
-  /**
-   * The position of the player.
-   * shorthand for `this.#camera.position`
-   */
-  // get position() {
-  //   return this.#camera.position;
-  // }
+  async init() {
+    const spawnPoint = this.#level.getRandomEntityByType('spawn-player');
+    const { x, y } = spawnPoint.tilePosition;
 
-  // get rotation() {
-  //   return this.#camera.rotation;
-  // }
+    // Create a Player Entity
+    const player = new Entity({
+      type: 'player',
+      x, y,
+      direction: spawnPoint.direction,
+    });
+    this.#level.addEntity(player);
+  }
+
 
   handleEvent(event) {
+    const player = this.#level.getEntityByType('player');
+    let newPosition = null;
+    // const facindDirection = player.direction;
+    // const 
+
     // const camera = this.#camera
     // const { position } = this;
     // // Clone the current position so we don't alter the camera's actual position
@@ -47,36 +48,54 @@ export class UserInput {
     // camera.getWorldDirection(direction);
 
     switch (event.key) {
+      // Forward in the direction the camera is facing
       case 'ArrowUp':
       case 'w':
-        // newPosition.addScaledVector(direction, 1);
-        // event.preventDefault();
+        console.log('Forward in', player.direction)
+        newPosition = player.positionInFront();
         break;
+      // Backward from the direction the camera is facing
       case 'ArrowDown':
       case 's':
-        // newPosition.addScaledVector(direction, -1);
-        // event.preventDefault();
+        console.log('Backward in', player.direction)
+        // player.direction = DIRECTION.SOUTH;
+        newPosition = player.positionBehind();
+        // if ([DIRECTION.NORTH, DIRECTION.SOUTH].includes(player.direction)) {
+        //   newPosition.y -= 1;
+        // } else if ([DIRECTION.EAST, DIRECTION.WEST].includes(player.direction)) {
+        //   newPosition.x -= 1;
+        // }
         break;
+      // Strafe left
       case 'ArrowLeft':
       case 'a':
-        // newPosition.addScaledVector(new Vector3().crossVectors(camera.up, direction), 1);
-        // event.preventDefault();
+        newPosition = player.tilePosition;
+        newPosition.x -= 1;
         break;
+      // Strafe right
       case 'ArrowRight':
       case 'd':
-        // newPosition.addScaledVector(new Vector3().crossVectors(camera.up, direction), -1);
-        // event.preventDefault();
+        newPosition = player.tilePosition;
+        newPosition.x += 1;
         break;
+      // Rotate left
       case 'q':
         // Rotate left
-        // camera.rotateY(degToRad(90));
-        // event.preventDefault();
+        player.direction = rotateDirection(player.direction, -1);
+        console.log('new direction', player.direction)
         break;
+      // Rotate right
       case 'e':
         // Rotate right
-        // camera.rotateY(degToRad(-90));
-        // event.preventDefault();
+        player.direction = rotateDirection(player.direction, 1);
+        console.log('new direction', player.direction)
         break;
+    }
+
+    if (newPosition) {
+      console.log('New Position', newPosition)
+      player.tilePosition = newPosition;
+      event.preventDefault();
     }
 
     // Round the new position to the nearest whole number

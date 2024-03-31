@@ -56,22 +56,40 @@ export class Engine {
     this.scene.add(light);
 
     //
-    // Move the Camera to the spawn point
-    const spawnPoint = level.getRandomEntityByType('spawn-player');
-    const lookPosition = spawnPoint.positionInFront();
-    this.cameraRig.position.set(
-      spawnPoint.tilePosition.x,
-      0,
-      spawnPoint.tilePosition.y
-    );
-    this.cameraRig.lookAt(lookPosition.x, 0, lookPosition.y);
-    console.log('spawnPoint', spawnPoint);
+    // Move the Camera to a random spawn point
+    // const spawnPoint = level.getRandomEntityByType('spawn-player');
+    // const { x: spawnX, y: spawnY } = spawnPoint.tilePosition;
+    // const lookPosition = spawnPoint.positionInFront();
+    // const { x: lookX, y: lookY } = lookPosition;
+    // this.cameraRig.position.set(spawnX, 0, spawnY);
+    // this.cameraRig.lookAt(lookX, 0, lookY);
+    this.cameraRig.position.set(0, 0, 0);
   }
 
   /**
    * Update is called every Tick
    */
   async update() {
+    // Update dirty entities
+    for (const entity of this.#level.dirtyEntities) {
+      console.log('Updating dirty', entity);
+    }
+    // Move the Camera to the Player's position
+    const player = this.#level.getEntityByType('player');
+    if (player) {
+      const { x, y } = player.tilePosition;
+      const lookPosition = player.positionInFront();
+      const { x: lookX, y: lookY } = lookPosition;
+
+      if (this._lookAtX !== lookX || this._lookAtY !== lookY) {
+        console.log('Moving Camera to look at', player.direction, {lookX, lookY}, 'from', {x, y})
+        this._lookAtX = lookX;
+        this._lookAtY = lookY;
+        this.cameraRig.position.set(x, 0, y);
+        this.cameraRig.lookAt(lookX, 0, lookY);
+      }
+    }
+
     // Render the scene
     this.renderer.render(this.scene, this.camera);
   }

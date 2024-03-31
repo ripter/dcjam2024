@@ -12,11 +12,16 @@ const DEFAULT_DEF_VALUES = {
 }
 
 /**
- * The Level is the main data container for an active game.
- * It contains the map, set pieces, and definitions for the game.
+ * Source of truth for the game state.
+ * Create a new level from a config file.
+ * example:
+ * ```
+ *     const level = await Level.Load(`/pathToLevel/config.json`);
+ * ```
  */
 export class Level {
   #config;
+  #entities;
   /**
    * Loads a level from the given URL.
    * @param {string} url 
@@ -34,8 +39,7 @@ export class Level {
     // Entities that changed during the tick are stored here. 
     this.dirtyEntities = new Set();
     // Hydrate the entities from the config
-    console.log('Loading Entities', config.entities);
-    this.entities = config.entities.map(config => (new Entity(config)));
+    this.#entities = config.entities.map(config => (new Entity(config)));
     delete this.#config.entities;
   }
 
@@ -47,11 +51,27 @@ export class Level {
   }
 
   getEntitiesByType(type) {
-    return this.entities.filter(entity => entity.type === type);
+    return this.#entities.filter(entity => entity.type === type);
   }
   getRandomEntityByType(type) {
     const entities = this.getEntitiesByType(type);
     return entities[Math.floor(Math.random() * entities.length)];
+  }
+  getEntityByType(type) {
+    return this.getEntitiesByType(type)[0] ?? null;
+  }
+
+
+  addEntity(entity) {
+    this.#entities.push(entity);
+    this.dirtyEntities.add(entity);
+  }
+  removeEntity(entity) {
+    const index = this.#entities.indexOf(entity);
+    if (index >= 0) {
+      this.#entities.splice(index, 1);
+    }
+    this.dirtyEntities.delete(entity);
   }
 
   /**
@@ -101,7 +121,6 @@ export class Level {
     // Wait for all models to load
     return await Promise.all(loadPromises);
   }
-
 
   /**
    * Loads the Level from a config file.
