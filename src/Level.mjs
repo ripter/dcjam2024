@@ -1,5 +1,7 @@
-import { Vector3 } from 'three';
+import { Vector2 } from 'three';
 import { loadModel } from './loadModel.mjs';
+import { Entity } from './Entity.mjs';
+import { DIRECTION } from './consts.mjs';
 
 
 // Default values for a tile definitions
@@ -31,6 +33,10 @@ export class Level {
     this.definitions = new Map();
     // Entities that changed during the tick are stored here. 
     this.dirtyEntities = new Set();
+    // Hydrate the entities from the config
+    console.log('Loading Entities', config.entities);
+    this.entities = config.entities.map(config => (new Entity(config)));
+    delete this.#config.entities;
   }
 
   get widthInTiles() {
@@ -38,10 +44,6 @@ export class Level {
   }
   get heightInTiles() {
     return this.#config.gridHeight;
-  }
-
-  get entities() {
-    return this.#config.entities;
   }
 
   getEntitiesByType(type) {
@@ -52,11 +54,16 @@ export class Level {
     return entities[Math.floor(Math.random() * entities.length)];
   }
 
+  /**
+   * Converts an XY coordinate to an index. 
+   * @param {number} index 
+   * @returns {Vector2} 
+   */
   indexToXY(index) {
     const { widthInTiles: width } = this;
     const x = index % width;
     const y = Math.floor(index / width);
-    return { x, y };
+    return new Vector2(x, y);
   }
 
   /**

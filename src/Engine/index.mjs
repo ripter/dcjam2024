@@ -57,9 +57,15 @@ export class Engine {
 
     //
     // Move the Camera to the spawn point
-    const spSpawnPoint = level.getRandomEntityByType('spawn-player');
-    this.cameraRig.position.set(spSpawnPoint.x, 0, spSpawnPoint.y);
-    console.log('spawnPoint', spSpawnPoint);
+    const spawnPoint = level.getRandomEntityByType('spawn-player');
+    const lookPosition = spawnPoint.positionInFront();
+    this.cameraRig.position.set(
+      spawnPoint.tilePosition.x,
+      0,
+      spawnPoint.tilePosition.y
+    );
+    this.cameraRig.lookAt(lookPosition.x, 0, lookPosition.y);
+    console.log('spawnPoint', spawnPoint);
   }
 
   /**
