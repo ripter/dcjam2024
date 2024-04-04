@@ -25,7 +25,8 @@
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0
   ],
   "entities": [
-    {"type": "spawn-player", "x": 2, "y": 3, "direction": "NORTH"}
+    {"type": "player", "x": 0, "y": 0, "direction": "SOUTH", "assetId": "player"},
+    {"type": "spawn-player", "x": 2, "y": 3, "direction": "EAST"}
   ],
   "defs": {
     "0": {

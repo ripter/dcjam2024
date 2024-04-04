@@ -8,19 +8,21 @@ import { rotateDirection } from './consts.mjs';
 export class Entity {
   #level;
 
-  constructor(config) {
-    this.#level = null;
-    this.direction = config.direction || DIRECTION.NORTH;
-    this.tilePosition = new Vector2(config.x, config.y);
-    this.type = config.type;
-  }
-
-  // Level is a circular reference, so we need to set it after the constructor.
-  // it gets set when the entity is added to the level.
-  set level(level) {
+  constructor(config, level) {
     this.#level = level;
+    Object.assign(this, {
+      ...config,
+      direction: config.direction ?? DIRECTION.NORTH,
+      tilePosition: new Vector2(config.x, config.y),
+    });
+
+    // Clean up from merging the config into ourselves.
+    delete this.x;
+    delete this.y;
   }
 
+
+  // Mark the entity as dirty so it will be updated in the next tick.
   markDirty() {
     this.#level.dirtyEntities.add(this);
   }

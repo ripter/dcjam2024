@@ -39,7 +39,7 @@ export class Level {
     // Entities that changed during the tick are stored here. 
     this.dirtyEntities = new Set();
     // Hydrate the entities from the config
-    this.#entities = config.entities.map(config => (new Entity(config)));
+    this.#entities = config.entities.map(config => (new Entity(config, this)));
     delete this.#config.entities;
   }
 

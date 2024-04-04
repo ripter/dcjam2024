@@ -5,18 +5,23 @@ import {
   Graphics,
   Sprite,
 } from '../../libs/pixi.min.mjs';
+import { loadSprite } from './loadSprite.mjs';
+import { DIRECTION } from '../consts.mjs';
 
 export class Minimap {
   #level;
   constructor(level) {
     this.#level = level;
+    this.tileSize = 32;
     this.scene = new Container(); // root container for the minimap
     this.background = new Graphics(); // background/chrome for the minimap
     this.tileMap = new Container(); // container for the minimap tiles
     this.mask = new Graphics(); // mask for the minimap
+    this.entities = new Container(); // container for the entities
     this.scene.addChild(this.mask);
     this.scene.addChild(this.tileMap);
     this.scene.addChild(this.background);
+    this.scene.addChild(this.entities);
   }
 
   get position() {
@@ -28,9 +33,7 @@ export class Minimap {
     const loadPromises = this.#level.floorMap.map(async (tileId, index) => {
       const definition = this.#level.definitions.get(tileId);
       const { x, y } = this.#level.indexToXY(index);
-      // Use PIXI Assets to load the texture
-      const texture = await Assets.load(definition.sprite);
-      const sprite = new Sprite(texture);
+      const sprite = await loadSprite(definition.sprite, this.tileSize);
       sprite.tilePosition = new Vector2(x, y);
       this.tileMap.addChild(sprite);
       return sprite;
@@ -38,6 +41,42 @@ export class Minimap {
 
     // Wait for all models to load
     return await Promise.all(loadPromises);
+  }
+
+
+  async update(entity) {
+    const { x, y } = entity.tilePosition;
+    switch (entity.type) {
+      case 'player':
+        if (entity.sprite == null) {
+          const asset = this.#level.definitions.get(entity.assetId);
+          entity.sprite = await loadSprite(asset.sprite, this.tileSize);
+          this.entities.addChild(entity.sprite);
+        }
+        // Move the Sprite
+        entity.sprite.position.set(
+          x * this.tileSize, 
+          y * this.tileSize 
+        );
+        // Rotate the Sprite
+        // entity.sprite.rotation = entity.direction * Math.PI / 2;
+        switch (entity.direction) {
+          case DIRECTION.NORTH:
+            entity.sprite.rotation = 0;
+            break;
+          case DIRECTION.EAST:
+            entity.sprite.rotation = Math.PI / 2;
+            break;
+          case DIRECTION.SOUTH:
+            entity.sprite.rotation = Math.PI;
+            break;
+          case DIRECTION.WEST:
+            entity.sprite.rotation = 3 * Math.PI / 2;
+            break;
+          default:
+            // nothing
+        }
+    }
   }
 
   /**
@@ -48,6 +87,7 @@ export class Minimap {
   resize(width, height) {
     const widthInTiles = 4;
     const tileSize = Math.ceil(Math.min(width, height) / widthInTiles);
+    this.tileSize = tileSize;
 
     // Resise the tiles
     this.tileMap.children.forEach((sprite) => {
@@ -70,24 +110,4 @@ export class Minimap {
   }
 
 
-  /**
-   * Adds the tiles from level to tileMap.
-   * 
-   */
-  // async addTiles() {
-    // const level = this.#level;
-    // Add each tile in the level to the mini map
-    // for (let x = 0; x < level.widthInTiles; x++) {
-    //   for (let y = 0; y < level.heightInTiles; y++) {
-
-    //     const tile = level.getTileBy2DPosition(x, y);
-    //     const texture = await Assets.load(tile.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
-    //     const sprite = new Sprite(texture);
-    //     // sprite.pivot.set(sprite.width / 2, sprite.height / 2);
-    //     // Save the tile position for later
-    //     sprite.tilePosition = { x, y };
-    //     this.tileMap.addChild(sprite);
-    //   }
-    // }
-  // }
 }

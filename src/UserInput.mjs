@@ -19,16 +19,13 @@ export class UserInput {
   }
 
   async init() {
+    // Move the Player to a random spawn point.
+    const player = this.#level.getEntityByType('player');
     const spawnPoint = this.#level.getRandomEntityByType('spawn-player');
     const { x, y } = spawnPoint.tilePosition;
-
-    // Create a Player Entity
-    const player = new Entity({
-      type: 'player',
-      x, y,
-      direction: spawnPoint.direction,
-    });
-    this.#level.addEntity(player);
+    player.tilePosition.set(x, y);
+    player.direction = spawnPoint.direction;
+    player.markDirty();
   }
 
 

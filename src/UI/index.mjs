@@ -66,6 +66,7 @@ export class UI {
     // Update dirty entities
     for (const entity of this.#level.dirtyEntities) {
       console.log('Update the UI for the entity:', entity);
+      this.miniMap.update(entity);
     }
   }
 
