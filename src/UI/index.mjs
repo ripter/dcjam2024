@@ -63,9 +63,8 @@ export class UI {
 
 
   async update() {
-    // Update dirty entities
+    // Pass the dirty entities to our sub-components.
     for (const entity of this.#level.dirtyEntities) {
-      console.log('Update the UI for the entity:', entity);
       this.miniMap.update(entity);
     }
   }

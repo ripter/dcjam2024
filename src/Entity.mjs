@@ -4,6 +4,7 @@ import { rotateDirection } from './consts.mjs';
 
 /**
  * Base class for all entities in the game.
+ * Entities are objects that exist in the game world and can move around.
  */
 export class Entity {
   #level;
@@ -97,7 +98,10 @@ export class Entity {
         return new Vector2(x, y);
     }
   }
-
+  /**
+   * Returns the position to the right of the entity.
+   * @returns {Vector2}
+   */
   positionToTheRight() {
     const { x, y } = this.tilePosition;
     switch (this.direction) {
@@ -114,6 +118,10 @@ export class Entity {
     }
   }
 
+  /**
+   *  Returns the position to the left of the entity.
+   * @returns {Vector2}
+   */
   positionToTheLeft() {
     const { x, y } = this.tilePosition;
     switch (this.direction) {

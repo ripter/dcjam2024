@@ -1,12 +1,10 @@
 import { Vector2 } from 'three';
 import { 
-  Assets,
   Container,
   Graphics,
-  Sprite,
 } from '../../libs/pixi.min.mjs';
 import { loadSprite } from './loadSprite.mjs';
-import { DIRECTION } from '../consts.mjs';
+import { rotateSpriteToDirection } from './rotateSpriteToDirection.mjs';
 
 export class Minimap {
   #level;
@@ -47,6 +45,7 @@ export class Minimap {
   async update(entity) {
     const { x, y } = entity.tilePosition;
     switch (entity.type) {
+      case 'entity':
       case 'player':
         if (entity.sprite == null) {
           const asset = this.#level.definitions.get(entity.assetId);
@@ -59,24 +58,30 @@ export class Minimap {
           y * this.tileSize 
         );
         // Rotate the Sprite
-        // entity.sprite.rotation = entity.direction * Math.PI / 2;
-        switch (entity.direction) {
-          case DIRECTION.NORTH:
-            entity.sprite.rotation = 0;
-            break;
-          case DIRECTION.EAST:
-            entity.sprite.rotation = Math.PI / 2;
-            break;
-          case DIRECTION.SOUTH:
-            entity.sprite.rotation = Math.PI;
-            break;
-          case DIRECTION.WEST:
-            entity.sprite.rotation = 3 * Math.PI / 2;
-            break;
-          default:
-            // nothing
-        }
+        rotateSpriteToDirection(entity.sprite, entity.direction);
+      default:
+        // Do nothing.
     }
+
+    // If the entity is the player, update the minimap position
+    if (entity.type === 'player') {
+      // Calculate the offset to keep the player in the center of the minimap
+      const offsetX = this.mask.width / 2 - entity.sprite.position.x;
+      const offsetY = this.mask.height / 2 - entity.sprite.position.y;
+
+      // Apply the offset to the tileMap position
+      // This effectively moves the tileMap in the opposite direction of the player's movement,
+      // keeping the player centered on the minimap.
+      this.tileMap.position.set(
+        offsetX,
+        offsetY
+      );
+      this.entities.position.set(
+        offsetX,
+        offsetY
+      );
+    }
+
   }
 
   /**
@@ -85,7 +90,7 @@ export class Minimap {
    * @param {number} height 
    */
   resize(width, height) {
-    const widthInTiles = 4;
+    const widthInTiles = 5;
     const tileSize = Math.ceil(Math.min(width, height) / widthInTiles);
     this.tileSize = tileSize;
 
