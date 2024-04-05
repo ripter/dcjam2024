@@ -1,5 +1,4 @@
 import { Camera } from '/libs/three.module.js';
-import { Entity } from './Entity.mjs';
 import { Level } from './Level.mjs';
 
 /**
@@ -20,7 +19,7 @@ export class UserInput {
 
   async init() {
     // Move the Player to a random spawn point.
-    const player = this.#level.getEntityByType('player');
+    const player = this.#level.getEntityByType('entity-player');
     const spawnPoint = this.#level.getRandomEntityByType('spawn-player');
     const { x, y } = spawnPoint.tilePosition;
     player.tilePosition.set(x, y);
@@ -30,7 +29,7 @@ export class UserInput {
 
 
   handleEvent(event) {
-    const player = this.#level.getEntityByType('player');
+    const player = this.#level.getEntityByType('entity-player');
 
     switch (event.key) {
       // Forward in the direction the camera is facing

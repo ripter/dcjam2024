@@ -46,7 +46,7 @@ export class Minimap {
     const { x, y } = entity.tilePosition;
     switch (entity.type) {
       case 'entity':
-      case 'player':
+      case 'entity-player':
         if (entity.sprite == null) {
           const asset = this.#level.definitions.get(entity.assetId);
           entity.sprite = await loadSprite(asset.sprite, this.tileSize);
@@ -64,7 +64,7 @@ export class Minimap {
     }
 
     // If the entity is the player, update the minimap position
-    if (entity.type === 'player') {
+    if (entity.type === 'entity-player') {
       // Calculate the offset to keep the player in the center of the minimap
       const offsetX = this.mask.width / 2 - entity.sprite.position.x;
       const offsetY = this.mask.height / 2 - entity.sprite.position.y;
