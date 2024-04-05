@@ -14,12 +14,23 @@ export class Entity {
     Object.assign(this, {
       ...config,
       direction: config.direction ?? DIRECTION.NORTH,
-      tilePosition: new Vector2(config.x, config.y),
     });
 
-    // Clean up from merging the config into ourselves.
-    delete this.x;
-    delete this.y;
+    // Convert the tile position to a Vector2
+    this.tilePosition = new Vector2(config.x, config.y);
+    delete this.x; // Remove the x property since we have a Vector2
+    delete this.y; // Remove the y property since we have a Vector2
+
+    // Load any additional assets
+    if (config.assetId) {
+      const asset = this.#level.definitions.get(config.assetId);
+
+      // Load the sprite for the entity
+      if (asset.sprite) {
+        console.log('loading Sprite', asset.sprite);
+      }
+    }
+
   }
 
 

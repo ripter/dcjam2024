@@ -44,44 +44,50 @@ export class Minimap {
 
   async update(entity) {
     const { x, y } = entity.tilePosition;
-    switch (entity.type) {
-      case 'entity':
-      case 'entity-player':
-        if (entity.sprite == null) {
-          const asset = this.#level.definitions.get(entity.assetId);
-          entity.sprite = await loadSprite(asset.sprite, this.tileSize);
-          this.entities.addChild(entity.sprite);
-        }
-        // Move the Sprite
-        entity.sprite.position.set(
-          x * this.tileSize, 
-          y * this.tileSize 
-        );
-        // Rotate the Sprite
-        rotateSpriteToDirection(entity.sprite, entity.direction);
-      default:
-        // Do nothing.
+
+    // Entities are drawn on the minimap as Sprites
+    if (entity.type.includes('entity')) {
+      if (entity.sprite == null) {
+        const asset = this.#level.definitions.get(entity.assetId);
+        entity.sprite = await loadSprite(asset.sprite, this.tileSize);
+        this.entities.addChild(entity.sprite);
+      }
+      // Move the Sprite
+      entity.sprite.position.set(
+        x * this.tileSize,
+        y * this.tileSize
+      );
+      // entity.sprite.tilePosition = new Vector2(x, y);
+      // Rotate the Sprite
+      rotateSpriteToDirection(entity.sprite, entity.direction);
     }
 
     // If the entity is the player, update the minimap position
     if (entity.type === 'entity-player') {
-      // Calculate the offset to keep the player in the center of the minimap
-      const offsetX = this.mask.width / 2 - entity.sprite.position.x;
-      const offsetY = this.mask.height / 2 - entity.sprite.position.y;
-
-      // Apply the offset to the tileMap position
-      // This effectively moves the tileMap in the opposite direction of the player's movement,
-      // keeping the player centered on the minimap.
-      this.tileMap.position.set(
-        offsetX,
-        offsetY
-      );
-      this.entities.position.set(
-        offsetX,
-        offsetY
-      );
+      this.centerOnPosition(entity.sprite.position.x, entity.sprite.position.y);
     }
 
+  }
+
+
+  centerOnPosition(x, y) {
+    const centerX = this.mask.width / 2;
+    const centerY = this.mask.height / 2;
+    // Calculate the offset to keep the player in the center of the minimap
+    const offsetX = centerX - x;
+    const offsetY = centerY - y;
+
+    // Apply the offset to the tileMap position
+    // This effectively moves the tileMap in the opposite direction of the player's movement,
+    // keeping the player centered on the minimap.
+    this.tileMap.position.set(
+      offsetX,
+      offsetY
+    );
+    this.entities.position.set(
+      offsetX,
+      offsetY
+    );
   }
 
   /**
@@ -96,6 +102,14 @@ export class Minimap {
 
     // Resise the tiles
     this.tileMap.children.forEach((sprite) => {
+      const { x, y } = sprite.tilePosition;
+      sprite.width = tileSize;
+      sprite.height = tileSize;
+      sprite.position.set(x * tileSize, y * tileSize);
+    });
+    
+    // Resize the Entities
+    this.entities.children.forEach((sprite) => {
       const { x, y } = sprite.tilePosition;
       sprite.width = tileSize;
       sprite.height = tileSize;

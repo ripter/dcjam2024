@@ -38,9 +38,6 @@ export class Level {
     this.definitions = new Map();
     // Entities that changed during the tick are stored here. 
     this.dirtyEntities = new Set();
-    // Hydrate the entities from the config
-    this.#entities = config.entities.map(config => (new Entity(config, this)));
-    delete this.#config.entities;
   }
 
   get widthInTiles() {
@@ -124,7 +121,11 @@ export class Level {
     });
 
     // Wait for all models to load
-    return await Promise.all(loadPromises);
+    await Promise.all(loadPromises);
+
+    // Hydrate the entities from the config
+    this.#entities = this.#config.entities.map(config => (new Entity(config, this)));
+    delete this.#config.entities;
   }
 
   /**
