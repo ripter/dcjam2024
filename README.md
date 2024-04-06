@@ -11,25 +11,13 @@ python3 -m http.server
 ```
 
 
-## Architecture
-Core Classes and Their Roles
-#### Level Class
+# How to Use as an Engine
 
-The Level Class instance in the source of truth for a running game.
-
-
-#### Engine Class
-
-The Engine Class instance handles the 3D using Three.JS
-
-
-#### UI Class
-
-The UI Class instance handles the game UI using PIXI.js
-
-#### UserInput Class
-
-The UserInput class instance captures and processes user inputs and updates the Level instance.
+1. Clone this repo. 
+2. Replace the README.md, LICENSE, etc with your own versions.
+3. Create levels by adding level-config.json files to the `levels/` folder. 
+4. Add custom Entity classes in the `entities/` folder.
+5. If you didn't replace `index.html` with your own, you can try any level with `?level=configname`
 
 
 
@@ -42,14 +30,7 @@ The UserInput class instance captures and processes user inputs and updates the 
 * Pixelmator Pro for 2D images.
 
 
-## Idea: Solar Probe
-
-
-## Things to think about while building.
-* Day/Night cycle.
-* Power meter.
-* Game over: No power for 24 hours.
-* Interaction points, consumable.
 
 # How/Why
 This was going to be My entry for Dungeon Crawler Jam 2024. Starting off with an empty project is a lot more challenging than starting from Godot or Unreal. So I needed a base that could provide a level starting field for Dungeon Crawler Games.
+I was unable to complete the entry in time, but continued development of the engine.

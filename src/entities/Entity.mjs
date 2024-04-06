@@ -1,6 +1,6 @@
 import { Vector2 } from 'three';
-import { DIRECTION } from './consts.mjs';
-import { rotateDirection } from './consts.mjs';
+import { DIRECTION } from '../consts.mjs';
+import { rotateDirection } from '../consts.mjs';
 
 /**
  * Base class for all entities in the game.

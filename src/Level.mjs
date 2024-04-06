@@ -1,7 +1,6 @@
 import { Vector2 } from 'three';
 import { loadModel } from './loadModel.mjs';
-import { Entity } from './Entity.mjs';
-import { DIRECTION } from './consts.mjs';
+import { spawnByType } from './utils/spawnByType.mjs';
 
 
 // Default values for a tile definitions
@@ -32,6 +31,7 @@ export class Level {
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
+    this.#entities = [];
     // Make sure all the tileIds are strings.
     this.floorMap = config.floorMap.map(tileId => tileId.toString());
     // Create a Map to store the asset definitions
@@ -107,7 +107,7 @@ export class Level {
     const defIds = Object.keys(defs);
 
     // Create an array of promises for loading all the models
-    const loadPromises = defIds.map(async (key) => {
+    const loadModelsPromises = defIds.map(async (key) => {
       const assetDefinition = defs[key];
       const model = assetDefinition.model && await loadModel(assetDefinition.model);
       this.definitions.set(key.toString(), {
@@ -121,10 +121,20 @@ export class Level {
     });
 
     // Wait for all models to load
-    await Promise.all(loadPromises);
+    await Promise.all(loadModelsPromises);
 
     // Hydrate the entities from the config
-    this.#entities = this.#config.entities.map(config => (new Entity(config, this)));
+    const loadEntitiesPromises = this.#config.entities.map(async config => {
+      try {
+        const entity = await spawnByType(config.type, config, this);
+        this.#entities.push(entity);
+        return entity;
+      } catch (error) {
+        console.error(`Failed to spawn entity:`, error);
+        return null;
+      }
+    });
+    await Promise.all(loadEntitiesPromises);
     delete this.#config.entities;
   }
 
