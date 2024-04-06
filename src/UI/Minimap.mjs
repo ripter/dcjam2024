@@ -96,7 +96,7 @@ export class Minimap {
    * @param {number} height 
    */
   resize(width, height) {
-    const widthInTiles = 5;
+    const widthInTiles = window.minimapWidthInTiles ?? 5;
     const tileSize = Math.ceil(Math.min(width, height) / widthInTiles);
     this.tileSize = tileSize;
 

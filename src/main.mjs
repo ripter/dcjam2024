@@ -1,15 +1,11 @@
-import { 
-  HemisphereLight, 
-  PerspectiveCamera, 
-  Scene, 
-  WebGLRenderer, 
-} from '/libs/three.module.js';
-import { Level } from './Level.mjs';
-import { UserInput } from './UserInput.mjs';
-import { UI } from './UI/index.mjs';
 import { Engine } from './Engine/index.mjs';
+import { Level } from './Level.mjs';
+import { UI } from './UI/index.mjs';
+import { UserInput } from './UserInput.mjs';
 
+// Game Settings
 const aspectRatio = 5 / 3;
+window.minimapWidthInTiles = 6;
 
 //
 // Load the Level
