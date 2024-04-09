@@ -2,18 +2,23 @@ import { snakeToCamel } from './snakeToCamel.mjs';
 
 /**
  * Creates a new Entity Instance based on the typeIdentifier.
- * @param {string} typeIdentifier - entity-id 
+ * @param {string} typeIdentifier - entity-id. Used to determine the class to spawn. 
  * @param {object} config - config object specific to the entity type.
  * @param {Level} level - The current level object.
  * @returns 
  */
 export async function spawnByType(typeIdentifier, config, level) {
     try {
-        const EntityClass = await tryImportClassFromIdentifier(typeIdentifier);
+        const EntityClass = await tryImportClassFromIdentifier(`entity-${typeIdentifier}`);
         if (!EntityClass) {
             throw new Error(`No class found for type ${typeIdentifier}`);
         }
-        return new EntityClass(config, level);
+        // Constructors can not be async, so call init method if it exists
+        const instance = new EntityClass(config, level);
+        if (typeof instance.init === 'function') {
+            await instance.init();
+        }
+        return instance;
     } catch (error) {
         console.error(`Failed to spawn type ${typeIdentifier}:`, error);
         throw error; // Re-throw or handle as needed

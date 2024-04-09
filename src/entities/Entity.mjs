@@ -1,16 +1,21 @@
 import { Vector2 } from 'three';
 import { DIRECTION } from '../consts.mjs';
 import { rotateDirection } from '../consts.mjs';
+import { loadSprite } from '../UI/loadSprite.mjs';
+
+const DEFAULT_TILE_SIZE = 32;
 
 /**
  * Base class for all entities in the game.
- * Entities are objects that exist in the game world and can move around.
+ * Entities are objects that exist in the game world and can move around on the level.
  */
 export class Entity {
   #level;
+  #assetId;
 
   constructor(config, level) {
     this.#level = level;
+    this.#assetId = config.assetId;
     Object.assign(this, {
       ...config,
       direction: config.direction ?? DIRECTION.NORTH,
@@ -20,17 +25,30 @@ export class Entity {
     this.tilePosition = new Vector2(config.x, config.y);
     delete this.x; // Remove the x property since we have a Vector2
     delete this.y; // Remove the y property since we have a Vector2
+  }
 
-    // Load any additional assets
-    if (config.assetId) {
-      const asset = this.#level.definitions.get(config.assetId);
+  /**
+   * Initializes the entity.
+   * This follows the same pattern as PIXI.js by using a init method,
+   * and works well with the async/await pattern.
+   */
+  async init() {
+    const { config } = this;
 
-      // Load the sprite for the entity
-      if (asset.sprite) {
-        console.log('loading Sprite', asset.sprite);
-      }
+    if (config.sprite) {
+      const sprite = await loadSprite(config.sprite, DEFAULT_TILE_SIZE);
+      this.sprite = sprite;
     }
+  }
 
+
+  /**
+   * Returns the asset definition for the entity.
+   * This is defined in the level definitions ("defs" in the config)
+   * @returns {Object}
+   */
+  get config() {
+    return this.#level.definitions.get(this.#assetId);
   }
 
 

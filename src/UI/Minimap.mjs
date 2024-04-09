@@ -42,31 +42,30 @@ export class Minimap {
   }
 
 
-  async update(entity) {
+  async addEntity(entity) {
+    console.log('adding Entity', entity.sprite)
+    this.entities.addChild(entity.sprite);
+  }
+  async removeEntity(entity) {
+    this.entities.removeChild(entity.sprite);
+  }
+  async updateEntity(entity) {
     const { x, y } = entity.tilePosition;
 
-    // Entities are drawn on the minimap as Sprites
-    if (entity.type.includes('entity')) {
-      if (entity.sprite == null) {
-        const asset = this.#level.definitions.get(entity.assetId);
-        entity.sprite = await loadSprite(asset.sprite, this.tileSize);
-        this.entities.addChild(entity.sprite);
-      }
+    if (entity.sprite) {
       // Move the Sprite
       entity.sprite.position.set(
         x * this.tileSize,
         y * this.tileSize
       );
-      // entity.sprite.tilePosition = new Vector2(x, y);
       // Rotate the Sprite
       rotateSpriteToDirection(entity.sprite, entity.direction);
     }
 
     // If the entity is the player, update the minimap position
-    if (entity.type === 'entity-player') {
-      this.centerOnPosition(entity.sprite.position.x, entity.sprite.position.y);
+    if (entity.type === 'player') {
+      this.centerOnPosition(x * this.tileSize, y * this.tileSize);
     }
-
   }
 
 

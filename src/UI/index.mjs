@@ -13,7 +13,7 @@ export class UI {
    * Creates a new UI for the level.
    * @param {Level} level 
    */
-  constructor(level, player) {
+  constructor(level) {
     this.#level = level;
     this.app = new Application();
     this.miniMap = new Minimap(level);
@@ -63,9 +63,17 @@ export class UI {
 
 
   async update() {
+    // Clear removed entities
+    for (const entity of this.#level.removedEntities) {
+      await this.miniMap.removeEntity(entity);
+    }
+    // Add new entities
+    for (const entity of this.#level.addedEntities) {
+      await this.miniMap.addEntity(entity);
+    }
     // Pass the dirty entities to our sub-components.
     for (const entity of this.#level.dirtyEntities) {
-      this.miniMap.update(entity);
+      await this.miniMap.updateEntity(entity);
     }
   }
 

@@ -68,7 +68,7 @@ export class Engine {
       const { x: lookX, y: lookY } = lookPosition;
 
       // TODO: Hide the camera stuff in the player entity
-      if (entity.type === 'entity-player') {
+      if (entity.type === 'player') {
         this.cameraRig.position.set(x, 0, y);
         this.camera.lookAt(lookX, 1, lookY);
       }

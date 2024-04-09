@@ -1,5 +1,5 @@
 import { Vector2 } from 'three';
-import { loadModel } from './loadModel.mjs';
+import { loadModel } from './Engine/loadModel.mjs';
 import { spawnByType } from './utils/spawnByType.mjs';
 
 
@@ -13,14 +13,20 @@ const DEFAULT_DEF_VALUES = {
 /**
  * Source of truth for the game state.
  * Create a new level from a config file.
- * example:
  * ```
  *     const level = await Level.Load(`/pathToLevel/config.json`);
+ * ```
+ * 
+ * Use the query methods to find entities in the level.
+ * ```
+ *    const player = level.getEntityByType('player');
+ *    const enemies = level.getEntitiesByType('enemy');
  * ```
  */
 export class Level {
   #config;
   #entities;
+
   /**
    * Loads a level from the given URL.
    * @param {string} url 
@@ -38,6 +44,8 @@ export class Level {
     this.definitions = new Map();
     // Entities that changed during the tick are stored here. 
     this.dirtyEntities = new Set();
+    this.addedEntities = new Set();
+    this.removedEntities = new Set();
   }
 
   get widthInTiles() {
@@ -46,6 +54,7 @@ export class Level {
   get heightInTiles() {
     return this.#config.gridHeight;
   }
+
 
   getEntitiesByType(type) {
     return this.#entities.filter(entity => entity.type === type);
@@ -62,7 +71,7 @@ export class Level {
   addEntity(entity) {
     entity.level = this; // Set the circular reference.
     this.#entities.push(entity);
-    this.dirtyEntities.add(entity);
+    this.addedEntities.add(entity);
   }
   removeEntity(entity) {
     delete entity.level; // Remove the circular reference.
@@ -70,7 +79,7 @@ export class Level {
     if (index >= 0) {
       this.#entities.splice(index, 1);
     }
-    this.dirtyEntities.delete(entity);
+    this.removedEntities.add(entity);
   }
   setDirty(entity) {
     this.dirtyEntities.add(entity);
@@ -93,6 +102,8 @@ export class Level {
    */
   endTick() {
     this.dirtyEntities.clear();
+    this.addedEntities.clear();
+    this.removedEntities.clear();
   }
 
 
@@ -110,33 +121,40 @@ export class Level {
     const loadModelsPromises = defIds.map(async (key) => {
       const assetDefinition = defs[key];
       const model = assetDefinition.model && await loadModel(assetDefinition.model);
+      // We don't load sprite here because PIXI has it's own loader.
+      // const sprite = assetDefinition.sprite && await loadSprite(assetDefinition.sprite, DEFAULT_TILE_SIZE);
       this.definitions.set(key.toString(), {
         // Default Values
         ...DEFAULT_DEF_VALUES,
         // Config Values
         ...assetDefinition,
-        // Model Values
+        // 3D and 2D assets
         model,
+        // sprite,
       });
     });
 
     // Wait for all models to load
-    await Promise.all(loadModelsPromises);
+    // await Promise.all(loadModelsPromises);
 
     // Hydrate the entities from the config
-    const loadEntitiesPromises = this.#config.entities.map(async config => {
+    const loadEntitiesPromises = this.#config.entities.map(async (config) => {
       try {
         const entity = await spawnByType(config.type, config, this);
-        this.#entities.push(entity);
+        this.addEntity(entity);
+        // this.#entities.push(entity);
         return entity;
       } catch (error) {
         console.error(`Failed to spawn entity:`, error);
         return null;
       }
     });
-    await Promise.all(loadEntitiesPromises);
+    // await Promise.all(loadEntitiesPromises);
     delete this.#config.entities;
+
+    await Promise.all([...loadModelsPromises, ...loadEntitiesPromises]);
   }
+
 
   /**
    * Loads the Level from a config file.

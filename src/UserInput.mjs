@@ -19,17 +19,19 @@ export class UserInput {
 
   async init() {
     // Move the Player to a random spawn point.
-    const player = this.#level.getEntityByType('entity-player');
+    const player = this.#level.getEntityByType('player');
     const spawnPoint = this.#level.getRandomEntityByType('spawn-player');
-    const { x, y } = spawnPoint.tilePosition;
-    player.tilePosition.set(x, y);
-    player.direction = spawnPoint.direction;
+    if (spawnPoint) {
+      const { x, y } = spawnPoint.tilePosition;
+      player.tilePosition.set(x, y);
+      player.direction = spawnPoint.direction;
+    }
     player.markDirty();
   }
 
 
   handleEvent(event) {
-    const player = this.#level.getEntityByType('entity-player');
+    const player = this.#level.getEntityByType('player');
 
     switch (event.key) {
       // Forward in the direction the camera is facing
