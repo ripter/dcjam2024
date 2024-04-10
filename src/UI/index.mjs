@@ -7,7 +7,6 @@ import { Minimap } from './Minimap.mjs';
 
 export class UI {
   #level;
-  #player;
 
   /**
    * Creates a new UI for the level.
@@ -81,7 +80,6 @@ export class UI {
    * Resizes the UI and re-renders the UI.
    */
   resizeAndRerender() {
-    console.log('Resize and Rerender the UI')
     // tell Pixi to resize
     this.app.resize();
 

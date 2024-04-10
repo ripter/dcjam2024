@@ -88,9 +88,10 @@ export class Engine {
 
 
   handleEvent(event) {
+    if (event.type !== 'resize') {
+      return;
+    }
     // Resize the game when the window is resized
-    // resizeGame();
-    console.log('handleEvent', event);
     this.resize();
   }
 

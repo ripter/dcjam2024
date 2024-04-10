@@ -43,7 +43,6 @@ export class Minimap {
 
 
   async addEntity(entity) {
-    console.log('adding Entity', entity.sprite)
     this.entities.addChild(entity.sprite);
   }
   async removeEntity(entity) {
@@ -108,12 +107,24 @@ export class Minimap {
     });
     
     // Resize the Entities
-    this.entities.children.forEach((sprite) => {
-      const { x, y } = sprite.tilePosition;
-      sprite.width = tileSize;
-      sprite.height = tileSize;
-      sprite.position.set(x * tileSize, y * tileSize);
+    this.#level.getEntities().forEach((entity) => {
+      const { x, y } = entity.tilePosition;
+      // console.log('resizing entity', entity.type, [x, y])
+      entity.sprite.width = tileSize;
+      entity.sprite.height = tileSize;
+      entity.sprite.position.set(x * tileSize, y * tileSize);
+
+      // if it's the player, update the minimap position
+      if (entity.type === 'player') {
+        this.centerOnPosition(x * tileSize, y * tileSize);
+      }
     });
+    // this.entities.children.forEach((sprite) => {
+    //   const { x, y } = sprite.tilePosition;
+    //   sprite.width = tileSize;
+    //   sprite.height = tileSize;
+    //   sprite.position.set(x * tileSize, y * tileSize);
+    // });
 
     // Resize the background
     this.background.clear();

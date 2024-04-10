@@ -55,7 +55,9 @@ export class Level {
     return this.#config.gridHeight;
   }
 
-
+  getEntities() {
+    return [...this.#entities];
+  }
   getEntitiesByType(type) {
     return this.#entities.filter(entity => entity.type === type);
   }
