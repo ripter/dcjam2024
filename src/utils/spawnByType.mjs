@@ -32,6 +32,7 @@ async function tryImportClassFromIdentifier(baseIdentifier) {
       let currentIdentifier = parts.join('-');
       let className = snakeToCamel(currentIdentifier);
       let moduleName = `/src/entities/${className}.mjs`;
+      console.log('tryImportClassFromIdentifier', moduleName, className);
       try {
           const module = await import(moduleName);
           if (module[className]) {
@@ -39,6 +40,7 @@ async function tryImportClassFromIdentifier(baseIdentifier) {
           }
       } catch (error) {
           // Log errors if you need to track failures for each module import
+          console.log(`Failed to import ${moduleName}:`, error);
       }
       parts.pop(); // Reduce specificity by removing the last segment
   }

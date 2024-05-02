@@ -1,8 +1,8 @@
 .PHONY: all clean
 
 
-all: node_modules/
-	npx vite
+all:
+	python3 -m http.server
 
 
 clean:

@@ -16,6 +16,7 @@ python3 -m http.server
 1. Clone this repo. 
 2. Replace the README.md, LICENSE, etc with your own versions.
 3. Create levels by adding level-config.json files to the `levels/` folder. 
+  * Levels are defined as a single JSON file. 
 4. Add custom Entity classes in the `entities/` folder.
 5. If you didn't replace `index.html` with your own, you can try any level with `?level=configname`
 

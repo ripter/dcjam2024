@@ -2,6 +2,7 @@ import { Engine } from './Engine/index.mjs';
 import { Level } from './Level.mjs';
 import { UI } from './UI/index.mjs';
 import { UserInput } from './UserInput.mjs';
+import { walkOne } from './actions/walkOne.mjs';
 
 // Game Settings
 const aspectRatio = 5 / 3;
@@ -32,24 +33,37 @@ await ui.init();
 
 //
 // Hanlde User Input
-const userInput = new UserInput(level);
-window.userInput = userInput; // for debugging
-await userInput.init();
+// const userInput = new UserInput(level);
+// window.userInput = userInput; // for debugging
+// await userInput.init();
+
+const actionQueue = new Set();
+
+// actionQueue.add(walkOne(level.player, 'north'));
 
 //
-// Animation Loop
-async function animateLoop() {
+// Game Loop
+async function gameLoop() {
+  // First step is to run the action queue
+  for (const action of actionQueue) {
+    const { value, done } = await action.next();
+    console.log('action:', value, done);
+    if (done) {
+      actionQueue.delete(action);
+    }
+  }
+
   try {
     await engine.update();
     await ui.update();
 
     level.endTick();
-    requestAnimationFrame(animateLoop);
+    requestAnimationFrame(gameLoop);
   }
   catch (error) {
     console.log('%cError in animateLoop', 'color: red;font-size: 2em;')
     console.error(error);
   }
 }
-// Start the Animation Loop
-animateLoop();
+// Start the Game Loop
+gameLoop();
