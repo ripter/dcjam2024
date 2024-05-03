@@ -1,5 +1,5 @@
 // SINGLETON ALERT!!!! 
-// This module is a singleton. It exports a single instance of a Set object.
+// This module is a singleton. functions exported work on a single instance of a Set object.
 // This enables the Action functions to be used across the entire application.
 const actionQueue = new Set();
 

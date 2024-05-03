@@ -1,7 +1,7 @@
 import { Vector2 } from 'three';
 import { loadModel } from './Engine/loadModel.mjs';
 import { spawnByType } from './utils/spawnByType.mjs';
-
+import { addEntity } from './entities/index.mjs';
 
 // Default values for a tile definitions
 const DEFAULT_DEF_VALUES = {
@@ -25,7 +25,7 @@ const DEFAULT_DEF_VALUES = {
  */
 export class Level {
   #config;
-  #entities;
+  // #entities;
 
   /**
    * Loads a level from the given URL.
@@ -37,7 +37,7 @@ export class Level {
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
-    this.#entities = [];
+    // this.#entities = [];
     // Make sure all the tileIds are strings.
     this.floorMap = config.floorMap.map(tileId => tileId.toString());
     // Create a Map to store the asset definitions
@@ -55,37 +55,37 @@ export class Level {
     return this.#config.gridHeight;
   }
 
-  getEntities() {
-    return [...this.#entities];
-  }
-  getEntitiesByType(type) {
-    return this.#entities.filter(entity => entity.type === type);
-  }
-  getRandomEntityByType(type) {
-    const entities = this.getEntitiesByType(type);
-    return entities[Math.floor(Math.random() * entities.length)];
-  }
-  getEntityByType(type) {
-    return this.getEntitiesByType(type)[0] ?? null;
-  }
+  // getEntities() {
+  //   return [...this.#entities];
+  // }
+  // getEntitiesByType(type) {
+  //   return this.#entities.filter(entity => entity.type === type);
+  // }
+  // getRandomEntityByType(type) {
+  //   const entities = this.getEntitiesByType(type);
+  //   return entities[Math.floor(Math.random() * entities.length)];
+  // }
+  // getEntityByType(type) {
+  //   return this.getEntitiesByType(type)[0] ?? null;
+  // }
 
 
-  addEntity(entity) {
-    entity.level = this; // Set the circular reference.
-    this.#entities.push(entity);
-    this.addedEntities.add(entity);
-  }
-  removeEntity(entity) {
-    delete entity.level; // Remove the circular reference.
-    const index = this.#entities.indexOf(entity);
-    if (index >= 0) {
-      this.#entities.splice(index, 1);
-    }
-    this.removedEntities.add(entity);
-  }
-  setDirty(entity) {
-    this.dirtyEntities.add(entity);
-  }
+  // addEntity(entity) {
+  //   entity.level = this; // Set the circular reference.
+  //   this.#entities.push(entity);
+  //   this.addedEntities.add(entity);
+  // }
+  // removeEntity(entity) {
+  //   delete entity.level; // Remove the circular reference.
+  //   const index = this.#entities.indexOf(entity);
+  //   if (index >= 0) {
+  //     this.#entities.splice(index, 1);
+  //   }
+  //   this.removedEntities.add(entity);
+  // }
+  // setDirty(entity) {
+  //   this.dirtyEntities.add(entity);
+  // }
 
   /**
    * Converts an XY coordinate to an index. 
@@ -143,8 +143,7 @@ export class Level {
     const loadEntitiesPromises = this.#config.entities.map(async (config) => {
       try {
         const entity = await spawnByType(config.type, config, this);
-        this.addEntity(entity);
-        // this.#entities.push(entity);
+        addEntity(entity);
         return entity;
       } catch (error) {
         console.error(`Failed to spawn entity:`, error);

@@ -5,6 +5,7 @@ import {
 } from '../../libs/pixi.min.mjs';
 import { loadSprite } from './loadSprite.mjs';
 import { rotateSpriteToDirection } from './rotateSpriteToDirection.mjs';
+import { iterateEntities } from '../entities/index.mjs';
 
 export class Minimap {
   #level;
@@ -107,7 +108,7 @@ export class Minimap {
     });
     
     // Resize the Entities
-    this.#level.getEntities().forEach((entity) => {
+    for (const entity of iterateEntities()) {
       const { x, y } = entity.tilePosition;
       // console.log('resizing entity', entity.type, [x, y])
       entity.sprite.width = tileSize;
@@ -118,13 +119,7 @@ export class Minimap {
       if (entity.type === 'player') {
         this.centerOnPosition(x * tileSize, y * tileSize);
       }
-    });
-    // this.entities.children.forEach((sprite) => {
-    //   const { x, y } = sprite.tilePosition;
-    //   sprite.width = tileSize;
-    //   sprite.height = tileSize;
-    //   sprite.position.set(x * tileSize, y * tileSize);
-    // });
+    }
 
     // Resize the background
     this.background.clear();
