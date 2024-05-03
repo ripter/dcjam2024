@@ -1,14 +1,11 @@
 import { Entity } from './Entity.mjs';
+import { walkOne } from '../actions/walkOne.mjs';
+import { dispatchAction } from '../actions/actionQueue.mjs';
 
 export class EntityPlayer extends Entity {
   constructor(config, level) {
     super(config, level);
-    console.log('EntityPlayer constructor', config);
     document.addEventListener('keydown', this);
-  }
-
-  testPlayer() {
-    return true;
   }
 
   handleEvent(event) {
@@ -17,6 +14,7 @@ export class EntityPlayer extends Entity {
       case 'ArrowUp':
       case 'w':
         console.log('Move Forward');
+        dispatchAction(walkOne(this, 'north'));
         break;
       // Backward from the direction the camera is facing
       case 'ArrowDown':

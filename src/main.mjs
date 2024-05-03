@@ -3,6 +3,7 @@ import { Level } from './Level.mjs';
 import { UI } from './UI/index.mjs';
 import { UserInput } from './UserInput.mjs';
 import { walkOne } from './actions/walkOne.mjs';
+import { iterateActions, deleteAction } from './actions/actionQueue.mjs';
 
 // Game Settings
 const aspectRatio = 5 / 3;
@@ -37,7 +38,6 @@ await ui.init();
 // window.userInput = userInput; // for debugging
 // await userInput.init();
 
-const actionQueue = new Set();
 
 // actionQueue.add(walkOne(level.player, 'north'));
 
@@ -45,11 +45,12 @@ const actionQueue = new Set();
 // Game Loop
 async function gameLoop() {
   // First step is to run the action queue
-  for (const action of actionQueue) {
+  for (const action of iterateActions()) {
+    console.log('Processing action:', action);
     const { value, done } = await action.next();
     console.log('action:', value, done);
     if (done) {
-      actionQueue.delete(action);
+      deleteAction(action);
     }
   }
 
