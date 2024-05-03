@@ -1,7 +1,7 @@
 import { Vector2 } from 'three';
-import { loadModel } from './Engine/loadModel.mjs';
-import { spawnByType } from './utils/spawnByType.mjs';
 import { addEntity } from './entities/index.mjs';
+import { loadModel } from './Engine/loadModel.mjs';
+import { spawnEntityByClassName } from './entities/spawnEntityByClassName.mjs';
 
 // Default values for a tile definitions
 const DEFAULT_DEF_VALUES = {
@@ -142,7 +142,7 @@ export class Level {
     // Hydrate the entities from the config
     const loadEntitiesPromises = this.#config.entities.map(async (config) => {
       try {
-        const entity = await spawnByType(config.type, config, this);
+        const entity = await spawnEntityByClassName(config.className, config, this);
         addEntity(entity);
         return entity;
       } catch (error) {

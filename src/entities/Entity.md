@@ -6,7 +6,7 @@ Entity Ids follow a naming pattern of root-child-leaf structure so checks can ea
 Entities are objects that move around on the game board and rendered to the screen.
 
 * `entity`
-  * Base entity that can move around.
+  * Base Entity provides common methods used by subclasses.
 * `player`
   * Entity for the current player.
 * `spawn-player`

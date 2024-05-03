@@ -44,28 +44,28 @@ export class Minimap {
 
 
   async addEntity(entity) {
-    this.entities.addChild(entity.sprite);
+    // this.entities.addChild(entity.sprite);
   }
   async removeEntity(entity) {
-    this.entities.removeChild(entity.sprite);
+    // this.entities.removeChild(entity.sprite);
   }
   async updateEntity(entity) {
-    const { x, y } = entity.tilePosition;
+    // const { x, y } = entity.tilePosition;
 
-    if (entity.sprite) {
-      // Move the Sprite
-      entity.sprite.position.set(
-        x * this.tileSize,
-        y * this.tileSize
-      );
-      // Rotate the Sprite
-      rotateSpriteToDirection(entity.sprite, entity.direction);
-    }
+    // if (entity.sprite) {
+    //   // Move the Sprite
+    //   entity.sprite.position.set(
+    //     x * this.tileSize,
+    //     y * this.tileSize
+    //   );
+    //   // Rotate the Sprite
+    //   rotateSpriteToDirection(entity.sprite, entity.direction);
+    // }
 
-    // If the entity is the player, update the minimap position
-    if (entity.type === 'player') {
-      this.centerOnPosition(x * this.tileSize, y * this.tileSize);
-    }
+    // // If the entity is the player, update the minimap position
+    // if (entity.type === 'player') {
+    //   this.centerOnPosition(x * this.tileSize, y * this.tileSize);
+    // }
   }
 
 

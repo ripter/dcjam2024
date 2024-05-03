@@ -62,17 +62,17 @@ export class Engine {
    */
   async update() {
     // Update dirty entities
-    for (const entity of this.#level.dirtyEntities) {
-      const { x, y } = entity.tilePosition;
-      const lookPosition = entity.positionInFront();
-      const { x: lookX, y: lookY } = lookPosition;
+    // for (const entity of this.#level.dirtyEntities) {
+    //   const { x, y } = entity.tilePosition;
+    //   const lookPosition = entity.positionInFront();
+    //   const { x: lookX, y: lookY } = lookPosition;
 
-      // TODO: Hide the camera stuff in the player entity
-      if (entity.type === 'player') {
-        this.cameraRig.position.set(x, 0, y);
-        this.camera.lookAt(lookX, 1, lookY);
-      }
-    }
+    //   // TODO: Hide the camera stuff in the player entity
+    //   if (entity.type === 'player') {
+    //     this.cameraRig.position.set(x, 0, y);
+    //     this.camera.lookAt(lookX, 1, lookY);
+    //   }
+    // }
 
     // Render the scene
     this.renderer.render(this.scene, this.camera);

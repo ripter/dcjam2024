@@ -23,6 +23,7 @@ export class Entity {
 
     // Convert the tile position to a Vector2
     this.tilePosition = new Vector2(config.x, config.y);
+    delete this.assetId; // Remove the assetId property since we have a #assetId
     delete this.x; // Remove the x property since we have a Vector2
     delete this.y; // Remove the y property since we have a Vector2
   }

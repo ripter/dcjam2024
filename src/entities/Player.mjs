@@ -1,10 +1,15 @@
 import { Entity } from './Entity.mjs';
 import { walkOne } from '../actions/walkOne.mjs';
 import { dispatchAction } from '../actions/index.mjs';
+import { getFirstEntityByType } from './index.mjs';
 
-export class EntityPlayer extends Entity {
+export class Player extends Entity {
   constructor(config, level) {
     super(config, level);
+
+    // huh? I'm PlayerEntity, so why am I fetching myself?
+    // const player = getFirstEntityByType('player');
+    window.player = this;
     document.addEventListener('keydown', this);
   }
 
