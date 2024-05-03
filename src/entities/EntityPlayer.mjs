@@ -1,6 +1,6 @@
 import { Entity } from './Entity.mjs';
 import { walkOne } from '../actions/walkOne.mjs';
-import { dispatchAction } from '../actions/actionQueue.mjs';
+import { dispatchAction } from '../actions/index.mjs';
 
 export class EntityPlayer extends Entity {
   constructor(config, level) {
