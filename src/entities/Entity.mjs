@@ -7,6 +7,14 @@ import { loadSprite } from '../UI/loadSprite.mjs';
 /**
  * Base class for all entities in the game.
  * Entities are objects that exist in the game world and can move around on the level.
+ * Entities and their subclasses are spawned from a config object, a cascading object starting with Entity.
+ * Config:
+ *  {
+ *    assetId: 'player', // id from the level definitions.
+ *    x: 0,
+ *    y: 0,
+ *    direction: DIRECTION.NORTH,
+ *  }
  */
 export class Entity {
   #level;

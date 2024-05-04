@@ -37,7 +37,7 @@
       "sprite": "assets/sprites/wall1.webp"
     }, 
     "player": {
-      "sprite": "assets/sprites/player.webp"
+      "spriteUrl": "assets/sprites/player.webp"
     }
   }
 }

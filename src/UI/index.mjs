@@ -1,21 +1,32 @@
+// SINGLETON ALERT!!!!
+// This module exports a singleton to manage the PIXI.js Application.
+// It exports UI, please initalize the UI with the init method before using it.
 import { 
   Application, 
   Assets,
   Sprite,
+  Container,
 } from '../../libs/pixi.min.mjs';
 import { Minimap } from './Minimap.mjs';
+import { DEFAULT_TILE_SIZE } from '../consts.mjs';
+import { loadSprite } from './loadSprite.mjs';
 
-export class UI {
-  #level;
 
+
+
+/**
+ * Manages the PIXI.js Application and the UI for the game.
+ * This class is a singleton and should be initalized with the init method at the start of the game.
+ */
+class UI {
   /**
    * Creates a new UI for the level.
-   * @param {Level} level 
    */
-  constructor(level) {
-    this.#level = level;
+  constructor() {
+    // Create the PIXI Application!
     this.app = new Application();
-    this.miniMap = new Minimap(level);
+    // Create a group to hold all the Entities
+    this.entityContainer = new Container();
     // Event listeners
     window.addEventListener('resize', this.resizeAndRerender.bind(this));
   }
@@ -42,39 +53,49 @@ export class UI {
     window.gameBody.appendChild(this.app.canvas);
 
     // Initalize the minimap and add it to the UI
-    await this.miniMap.init();
-    this.app.stage.addChild(this.miniMap.scene);
+    // await this.miniMap.init();
+    // this.app.stage.addChild(this.miniMap.scene);
 
     // Resize and Render the UI
-    this.resizeAndRerender();
+    // this.resizeAndRerender();
   }
 
-  async loadPlayerSprite() {
-    const srcTexture = this.#level.defs.get('player').sprite;
-    const texture = await Assets.load(srcTexture);
-    const player = new Sprite(texture);
-    const scale = this.tileSize / player.width; // TODO: move this to resizeAndRerender
-
-    player.anchor.set(0.5, 0.5);
-    player.scale.set(scale, scale);
-    return player;
+  /**
+   * Creates a new sprite and adds it to the entity container.
+   * @param {Mob} entity 
+   */
+  async spawnEntity(url) {
+    const sprite = await loadSprite(url, DEFAULT_TILE_SIZE);
+    this.entityContainer.addChild(sprite);
+    return sprite;
   }
 
+  // async loadPlayerSprite() {
+  //   const srcTexture = this.#level.defs.get('player').sprite;
+  //   const texture = await Assets.load(srcTexture);
+  //   const player = new Sprite(texture);
+  //   const scale = this.tileSize / player.width; // TODO: move this to resizeAndRerender
 
-  async update() {
-    // Clear removed entities
-    for (const entity of this.#level.removedEntities) {
-      await this.miniMap.removeEntity(entity);
-    }
-    // Add new entities
-    for (const entity of this.#level.addedEntities) {
-      await this.miniMap.addEntity(entity);
-    }
-    // Pass the dirty entities to our sub-components.
-    for (const entity of this.#level.dirtyEntities) {
-      await this.miniMap.updateEntity(entity);
-    }
-  }
+  //   player.anchor.set(0.5, 0.5);
+  //   player.scale.set(scale, scale);
+  //   return player;
+  // }
+
+
+  // async update() {
+  //   // Clear removed entities
+  //   for (const entity of this.#level.removedEntities) {
+  //     await this.miniMap.removeEntity(entity);
+  //   }
+  //   // Add new entities
+  //   for (const entity of this.#level.addedEntities) {
+  //     await this.miniMap.addEntity(entity);
+  //   }
+  //   // Pass the dirty entities to our sub-components.
+  //   for (const entity of this.#level.dirtyEntities) {
+  //     await this.miniMap.updateEntity(entity);
+  //   }
+  // }
 
   /**
    * Resizes the UI and re-renders the UI.
@@ -95,3 +116,7 @@ export class UI {
   }
 
 }
+
+// Singleton!
+export const ui = new UI();
+export default ui;

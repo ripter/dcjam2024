@@ -1,6 +1,6 @@
 import { Engine } from './Engine/index.mjs';
 import { Level } from './Level.mjs';
-import { UI } from './UI/index.mjs';
+import  UI from './UI/index.mjs';
 import { iterateActions, deleteAction } from './actions/index.mjs';
 
 // Game Settings
@@ -25,10 +25,9 @@ await engine.init();
 
 
 //
-// Create the 2D UI
-const ui = new UI(level);
-window.ui = ui; // for debugging
-await ui.init();
+// Initalize the 2D UI
+await UI.init();
+window.ui = UI; // for debugging
 
 
 //
@@ -45,7 +44,7 @@ async function gameLoop() {
 
   try {
     await engine.update();
-    await ui.update();
+    // await ui.update();
 
     requestAnimationFrame(gameLoop);
   }

@@ -42,10 +42,10 @@ export class Level {
     this.floorMap = config.floorMap.map(tileId => tileId.toString());
     // Create a Map to store the asset definitions
     this.definitions = new Map();
-    // Entities that changed during the tick are stored here. 
-    this.dirtyEntities = new Set();
-    this.addedEntities = new Set();
-    this.removedEntities = new Set();
+    // // Entities that changed during the tick are stored here. 
+    // this.dirtyEntities = new Set();
+    // this.addedEntities = new Set();
+    // this.removedEntities = new Set();
   }
 
   get widthInTiles() {
