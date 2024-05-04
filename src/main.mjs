@@ -47,7 +47,6 @@ async function gameLoop() {
     await engine.update();
     await ui.update();
 
-    level.endTick();
     requestAnimationFrame(gameLoop);
   }
   catch (error) {

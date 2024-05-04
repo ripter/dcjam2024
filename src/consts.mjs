@@ -1,4 +1,6 @@
 
+export const DEFAULT_TILE_SIZE = 32;
+
 export const DIRECTION = {
   NORTH: 'NORTH',
   EAST: 'EAST',

@@ -99,14 +99,6 @@ export class Level {
     return new Vector2(x, y);
   }
 
-  /**
-   * Ends the Tick and clears the dirty entities.
-   */
-  endTick() {
-    this.dirtyEntities.clear();
-    this.addedEntities.clear();
-    this.removedEntities.clear();
-  }
 
 
 

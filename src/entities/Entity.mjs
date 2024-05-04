@@ -3,7 +3,6 @@ import { DIRECTION } from '../consts.mjs';
 import { rotateDirection } from '../consts.mjs';
 import { loadSprite } from '../UI/loadSprite.mjs';
 
-const DEFAULT_TILE_SIZE = 32;
 
 /**
  * Base class for all entities in the game.
@@ -23,9 +22,9 @@ export class Entity {
 
     // Convert the tile position to a Vector2
     this.tilePosition = new Vector2(config.x, config.y);
-    delete this.assetId; // Remove the assetId property since we have a #assetId
     delete this.x; // Remove the x property since we have a Vector2
     delete this.y; // Remove the y property since we have a Vector2
+    delete this.assetId; // Remove the assetId property since we have a #assetId
   }
 
   /**
@@ -36,10 +35,10 @@ export class Entity {
   async init() {
     const { config } = this;
 
-    if (config.sprite) {
-      const sprite = await loadSprite(config.sprite, DEFAULT_TILE_SIZE);
-      this.sprite = sprite;
-    }
+    // if (config.sprite) {
+    //   const sprite = await loadSprite(config.sprite, DEFAULT_TILE_SIZE);
+    //   this.sprite = sprite;
+    // }
   }
 
 
@@ -54,9 +53,9 @@ export class Entity {
 
 
   // Mark the entity as dirty so it will be updated in the next tick.
-  markDirty() {
-    this.#level.dirtyEntities.add(this);
-  }
+  // markDirty() {
+  //   this.#level.dirtyEntities.add(this);
+  // }
 
 
   moveForward() {

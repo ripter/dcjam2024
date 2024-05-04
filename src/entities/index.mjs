@@ -1,9 +1,9 @@
 // SINGLETON ALERT!!!! 
 // This module is a singleton. functions exported work on a single instance of a Set object.
 // This enables the Entity functions to be used across the entire application.
-// This is an alternative to passing the Entity Queue around as a parameter.
+// This is an alternative to passing the Entity Queue around as a parameter (aka Dependency Injection).
 const entityQueue = new Set();
-
+window.entityQueue = entityQueue;
 
 /**
  * Adds an entity to the entity queue.

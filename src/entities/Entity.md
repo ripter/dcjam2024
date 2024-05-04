@@ -1,14 +1,11 @@
-
-Entity Ids follow a naming pattern of root-child-leaf structure so checks can easy check at different granulatirties. Example: `entity` becomes an `Entity()` while `player` becomes `EntityPlayer` which extends from the `Entity` class. This allows update and other methods to handle all entities, or a specific type of entity.
-
 # Entities
 
-Entities are objects that move around on the game board and rendered to the screen.
+What the heck are Entities? Entities are objects in the game. Next Qustion!
 
-* `entity`
-  * Base Entity provides common methods used by subclasses.
-* `player`
-  * Entity for the current player.
-* `spawn-player`
-  * Location the player could spawn.
-  * When there are several spawn-player entities, the player will spawn randomly at a location.
+Entities are Classes (or Subclasses of Entity) that have functionality in the game world. If you know E.C.S. modle, this is not the same kind of Entity. In ECS, the Entity is just an ID or refrence, all logic happens in the Sytems. This is closer to GoDot in that the Entity Classes have the methods to perform work instead of setting properties and waiting for someone else to do the work.
+
+## Entity API
+* addEntity()
+* removeEntity()
+* clearEntites()
+* iter

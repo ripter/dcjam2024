@@ -2,8 +2,9 @@ import { Entity } from './Entity.mjs';
 import { walkOne } from '../actions/walkOne.mjs';
 import { dispatchAction } from '../actions/index.mjs';
 import { getFirstEntityByType } from './index.mjs';
+import { Mob } from './Mob.mjs';
 
-export class Player extends Entity {
+export class Player extends Mob {
   constructor(config, level) {
     super(config, level);
 
