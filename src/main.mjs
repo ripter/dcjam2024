@@ -1,4 +1,4 @@
-import ThreeD from './Engine/index.mjs';
+import ThreeD from './ThreeD/index.mjs';
 import { Level } from './Level.mjs';
 import  UI from './UI/index.mjs';
 import { iterateActions, deleteAction } from './actions/index.mjs';
@@ -22,6 +22,7 @@ window.level = level; // for debugging
 // const engine = new Engine(level, aspectRatio, window.gameBody);
 await ThreeD.init(aspectRatio, window.gameBody);
 await ThreeD.loadFloorMap(level.floorMap);
+await ThreeD.resize();
 window.ThreeD = ThreeD; // for debugging
 
 

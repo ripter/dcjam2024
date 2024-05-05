@@ -1,6 +1,6 @@
 import { Vector2 } from 'three';
 import { addEntity } from './entities/index.mjs';
-import { loadModel } from './Engine/loadModel.mjs';
+import { loadModel } from './ThreeD/loadModel.mjs';
 import { spawnEntityByClassName } from './entities/spawnEntityByClassName.mjs';
 
 // Default values for a tile definitions

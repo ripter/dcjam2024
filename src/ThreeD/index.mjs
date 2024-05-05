@@ -10,7 +10,7 @@ import {
 } from 'three';
 import { findMaxDisplaySize } from '../utils/findMaxDisplaySize.mjs';
 
-export class Engine {
+export class ThreeD {
   #elmRoot;
 
   /**
@@ -110,5 +110,5 @@ export class Engine {
 
 
 // Singleton!
-const ThreeD = new Engine();
-export default ThreeD;
+const threeD = new ThreeD();
+export default threeD;
