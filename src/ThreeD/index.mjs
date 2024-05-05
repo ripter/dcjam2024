@@ -10,34 +10,34 @@ import {
 } from 'three';
 import { findMaxDisplaySize } from '../utils/findMaxDisplaySize.mjs';
 
-export class ThreeD {
+class ThreeD {
   #elmRoot;
+  #scene;
+
+  constructor() {
+    // Root Scene
+    this.#scene = new Scene();
+  }
 
   /**
    * Initializes the 3D Engine from the level.
    */
   async init(aspectRatio, elmRoot) {
-    console.log('elmRoot:', elmRoot);
     this.#elmRoot = elmRoot;
     this.aspectRatio = aspectRatio;
-    // Root Scene
-    this.scene = new Scene();
 
     // Camera
     this.camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-    this.cameraRig = new Group();
     this.camera.position.set(0, 1, 0);
-    // this.camera.lookAt(1, 1, 0);
-    this.cameraRig.add(this.camera);
-    this.scene.add(this.cameraRig);
+    this.renderer = null;
+    this.#scene.add(this.camera);
 
     // Renderer
     this.renderer = new WebGLRenderer();
     this.renderer.domElement.id = 'main-canvas';
-    this.#elmRoot.appendChild(this.renderer.domElement);
+    elmRoot.appendChild(this.renderer.domElement);
 
     window.addEventListener('resize', this);
-    // this.resize();
   }
 
   async loadFloorMap(floorMap) {
@@ -51,13 +51,13 @@ export class ThreeD {
       const { x, y } = level.indexToXY(index);
       const mesh = def.model.clone();
       mesh.position.set(x, 0, y);
-      this.scene.add(mesh);
+      this.#scene.add(mesh);
     });
 
     // Add some light
     const light = new HemisphereLight(0xffffff, 0x444444);
     light.position.set(1, 1, 1);
-    this.scene.add(light);
+    this.#scene.add(light);
   }
 
   /**
@@ -78,7 +78,7 @@ export class ThreeD {
     // }
 
     // Render the scene
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.#scene, this.camera);
   }
 
   /**
@@ -86,9 +86,12 @@ export class ThreeD {
    */
   async render() {
     // Render the scene
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.#scene, this.camera);
   }
 
+  /**
+   * Resize the 3D Engine when the window is resized.
+   */
   async resize() {
     const { width, height } = findMaxDisplaySize(this.aspectRatio);
     this.#elmRoot.style.width = `${width}px`;
@@ -97,13 +100,20 @@ export class ThreeD {
     this.camera.updateProjectionMatrix();
   }
 
-
   handleEvent(event) {
     if (event.type !== 'resize') {
       return;
     }
     // Resize the game when the window is resized
     this.resize();
+  }
+
+
+  addToScene(mesh) {
+    this.#scene.add(mesh);
+  }
+  addCameraTo(who) {
+    who.add(this.camera);
   }
 
 }

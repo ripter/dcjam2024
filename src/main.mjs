@@ -8,6 +8,20 @@ const aspectRatio = 5 / 3;
 window.minimapWidthInTiles = 6;
 
 //
+// Initalize the 3D Engine
+// const engine = new Engine(level, aspectRatio, window.gameBody);
+await ThreeD.init(aspectRatio, window.gameBody);
+await ThreeD.resize();
+window.ThreeD = ThreeD; // for debugging
+
+
+//
+// Initalize the 2D Engine
+await UI.init();
+window.ui = UI; // for debugging
+
+
+//
 // Load the Level
 // Level is specified in the URL query string, e.g. ?level=level001
 // Load the level from the URL query string or default
@@ -15,21 +29,9 @@ const searchParams = new URLSearchParams(location.search)
 const levelName = searchParams.get('level') || 'level1';
 const level = await Level.Load(`/levels/${levelName}/config.json`);
 window.level = level; // for debugging
-
-
-//
-// Initalize the 3D Engine
-// const engine = new Engine(level, aspectRatio, window.gameBody);
-await ThreeD.init(aspectRatio, window.gameBody);
+// Render the floor map
 await ThreeD.loadFloorMap(level.floorMap);
-await ThreeD.resize();
-window.ThreeD = ThreeD; // for debugging
 
-
-//
-// Initalize the 2D UI
-await UI.init();
-window.ui = UI; // for debugging
 
 
 //
@@ -49,7 +51,6 @@ async function gameLoop() {
   }
 
   try {
-    // await engine.update();
     // await ui.update();
     await ThreeD.render();
 

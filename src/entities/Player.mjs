@@ -1,15 +1,22 @@
+import { Group } from 'three';
+
 import { dispatchAction } from '../actions/index.mjs';
 import { Mob } from './Mob.mjs';
 import { walkOne } from '../actions/walkOne.mjs';
+import ThreeD from '../ThreeD/index.mjs';
 
 export class Player extends Mob {
   constructor(config, level) {
     super(config, level);
 
-    // huh? I'm PlayerEntity, so why am I fetching myself?
-    // const player = getFirstEntityByType('player');
-    window.player = this;
+    // Player does not have a model, instead it is a camera.
+    this.model = new Group();
+    ThreeD.addToScene(this.model);
+    // Move the Camera into our model.
+    ThreeD.addCameraTo(this.model); 
+
     document.addEventListener('keydown', this);
+    window.player = this; // for debugging
   }
 
   handleEvent(event) {
