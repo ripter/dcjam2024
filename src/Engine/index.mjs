@@ -1,3 +1,6 @@
+// SINGLETON ALERT!!!!
+// This module exports a singleton to manage the THREE.js Application.
+// It exports ThreeD, please initalize with the init method before using it.
 import { 
   PerspectiveCamera,
   WebGLRenderer,
@@ -8,15 +11,18 @@ import {
 import { findMaxDisplaySize } from '../utils/findMaxDisplaySize.mjs';
 
 export class Engine {
-  #level;
   #elmRoot;
 
-  constructor(level, aspectRatio, elmRoot) {
-    this.#level = level;
+  /**
+   * Initializes the 3D Engine from the level.
+   */
+  async init(aspectRatio, elmRoot) {
+    console.log('elmRoot:', elmRoot);
     this.#elmRoot = elmRoot;
     this.aspectRatio = aspectRatio;
     // Root Scene
     this.scene = new Scene();
+
     // Camera
     this.camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
     this.cameraRig = new Group();
@@ -24,22 +30,19 @@ export class Engine {
     // this.camera.lookAt(1, 1, 0);
     this.cameraRig.add(this.camera);
     this.scene.add(this.cameraRig);
+
     // Renderer
     this.renderer = new WebGLRenderer();
     this.renderer.domElement.id = 'main-canvas';
     this.#elmRoot.appendChild(this.renderer.domElement);
+
     window.addEventListener('resize', this);
-    this.resize();
+    // this.resize();
   }
 
-  /**
-   * Initializes the 3D Engine from the level.
-   */
-  async init() {
-    const level = this.#level;
-
+  async loadFloorMap(floorMap) {
     // Create the 3D world from the floorMap.
-    level.floorMap.forEach((tileId, index) => {
+    floorMap.forEach((tileId, index) => {
       const def = level.definitions.get(tileId);
       if (!def) {
         console.warn(`No definition found for tileId: ${tileId}`);
@@ -78,6 +81,14 @@ export class Engine {
     this.renderer.render(this.scene, this.camera);
   }
 
+  /**
+   * Render should be called every Tick
+   */
+  async render() {
+    // Render the scene
+    this.renderer.render(this.scene, this.camera);
+  }
+
   async resize() {
     const { width, height } = findMaxDisplaySize(this.aspectRatio);
     this.#elmRoot.style.width = `${width}px`;
@@ -96,3 +107,8 @@ export class Engine {
   }
 
 }
+
+
+// Singleton!
+const ThreeD = new Engine();
+export default ThreeD;

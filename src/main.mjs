@@ -1,4 +1,4 @@
-import { Engine } from './Engine/index.mjs';
+import ThreeD from './Engine/index.mjs';
 import { Level } from './Level.mjs';
 import  UI from './UI/index.mjs';
 import { iterateActions, deleteAction } from './actions/index.mjs';
@@ -18,10 +18,11 @@ window.level = level; // for debugging
 
 
 //
-// Create the 3D Engine
-const engine = new Engine(level, aspectRatio, window.gameBody);
-window.engine = engine; // for debugging
-await engine.init();
+// Initalize the 3D Engine
+// const engine = new Engine(level, aspectRatio, window.gameBody);
+await ThreeD.init(aspectRatio, window.gameBody);
+await ThreeD.loadFloorMap(level.floorMap);
+window.ThreeD = ThreeD; // for debugging
 
 
 //
@@ -35,16 +36,21 @@ window.ui = UI; // for debugging
 async function gameLoop() {
   // First step is to run the action queue
   for (const action of iterateActions()) {
-    const { value, done } = await action.next();
-    console.log('Action:', value, done);
-    if (done) {
-      deleteAction(action);
+    try {
+      const { value, done } = await action.next();
+      console.log('Action:', value, done);
+      if (done) {
+        deleteAction(action);
+      }
+    } catch (error) {
+      console.error('Error in action loop:', error);
     }
   }
 
   try {
-    await engine.update();
+    // await engine.update();
     // await ui.update();
+    await ThreeD.render();
 
     requestAnimationFrame(gameLoop);
   }
