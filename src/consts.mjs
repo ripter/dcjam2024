@@ -9,6 +9,12 @@ export const DIRECTION = {
 };
 
 
+/**
+ * 
+ * @param {DIRECTION} startDirection 
+ * @param {-1|1} turnDirection -1 for left, 1 for right
+ * @returns 
+ */
 export function rotateDirection(startDirection, turnDirection) {
   switch (startDirection) {
     case DIRECTION.NORTH:

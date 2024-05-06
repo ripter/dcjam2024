@@ -1,7 +1,10 @@
+import { Object3D } from 'three';
+
 import { Entity } from './Entity.mjs';
 import { loadSprite } from '../UI/loadSprite.mjs';
 import { DEFAULT_TILE_SIZE } from '../consts.mjs';
 import UI from '../UI/index.mjs';
+import threeD from '../ThreeD/index.mjs';
 
 /**
  * Mob (or Moving Object) class.
@@ -25,13 +28,35 @@ export class Mob extends Entity {
     const { config } = this;
 
     // Create a UI sprite for the MOB.
-    if (!config.spriteUrl) {
-      throw new Error('Mob requires a spriteUrl in the config.');
+    if (config.spriteUrl) {
+      this.sprite = await UI.spawnEntity(config.spriteUrl);
     }
-    this.sprite = await UI.spawnEntity(config.spriteUrl);
-    if (!this.sprite) {
-      throw new Error('Failed to create sprite for Mob.');
+    // Create a 3D model for the MOB.
+    if (config.modelUrl) {
+      this.model = await threeD.spawnModel(config.modelUrl);
+    } else {
+      this.model = new Object3D();
+    }
+
+
+    this.setPosition(this.tilePosition.x, this.tilePosition.y);
+    this.setDirection(config.direction);
+  }
+
+  setPosition(x, y) {
+    super.setPosition(x, y);
+    if (this.sprite) {
+      this.sprite.position.set(x * DEFAULT_TILE_SIZE, y * DEFAULT_TILE_SIZE);
+    }
+    if (this.model) {
+      this.model.position.set(x, 0, y);
     }
   }
 
+  setDirection(direction) {
+    super.setDirection(direction);
+    const lookPosition = this.positionInFront();
+    const { x: lookX, y: lookY } = lookPosition;
+    this.model.lookAt(lookX, 0, lookY);
+  }
 }

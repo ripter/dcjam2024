@@ -1,23 +1,33 @@
-import { Group } from 'three';
+import { Object3D } from 'three';
 
 import { dispatchAction } from '../actions/index.mjs';
 import { Mob } from './Mob.mjs';
 import { walkOne } from '../actions/walkOne.mjs';
 import ThreeD from '../ThreeD/index.mjs';
 
+const PLAYER_HEIGHT = 1.8;
+
 export class Player extends Mob {
   constructor(config, level) {
     super(config, level);
 
-    // Player does not have a model, instead it is a camera.
-    this.model = new Group();
-    ThreeD.addToScene(this.model);
-    // Move the Camera into our model.
-    ThreeD.addCameraTo(this.model); 
-
     document.addEventListener('keydown', this);
     window.player = this; // for debugging
   }
+
+  async init() {
+    await super.init();
+    const { tilePosition } = this;
+
+    ThreeD.addToScene(this.model);
+    // Move the Camera into our model.
+    ThreeD.addCameraTo(this.model); 
+    // Make sure the camera and the model are looking in the same direction.
+    const lookPosition = this.positionInFront();
+    const { x: lookX, y: lookY } = lookPosition;
+    ThreeD.cameraLookAt(lookX, 1, lookY);
+  }
+
 
   handleEvent(event) {
     switch (event.key) {

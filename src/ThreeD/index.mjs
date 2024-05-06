@@ -115,7 +115,13 @@ class ThreeD {
   addCameraTo(who) {
     who.add(this.camera);
   }
+  cameraLookAt(x, y, z) {
+    this.camera.lookAt(x, y, z);
+  }
 
+  async spawnModel(modelUrl) {
+    console.log('spawnModel', modelUrl);
+  }
 }
 
 

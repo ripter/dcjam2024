@@ -19,20 +19,22 @@ import { loadSprite } from '../UI/loadSprite.mjs';
 export class Entity {
   #level;
   #assetId;
+  #config;
 
   constructor(config, level) {
     this.#level = level;
     this.#assetId = config.assetId;
-    Object.assign(this, {
-      ...config,
-      direction: config.direction ?? DIRECTION.NORTH,
-    });
+    // Object.assign(this, {
+    //   ...config,
+    //   direction: config.direction ?? DIRECTION.NORTH,
+    // });
+    this.#config = config;
 
     // Convert the tile position to a Vector2
     this.tilePosition = new Vector2(config.x, config.y);
-    delete this.x; // Remove the x property since we have a Vector2
-    delete this.y; // Remove the y property since we have a Vector2
-    delete this.assetId; // Remove the assetId property since we have a #assetId
+    // delete this.x; // Remove the x property since we have a Vector2
+    // delete this.y; // Remove the y property since we have a Vector2
+    // delete this.assetId; // Remove the assetId property since we have a #assetId
   }
 
   /**
@@ -56,7 +58,7 @@ export class Entity {
    * @returns {Object}
    */
   get config() {
-    return this.#level.definitions.get(this.#assetId);
+    return this.#config;
   }
 
 
@@ -65,6 +67,13 @@ export class Entity {
   //   this.#level.dirtyEntities.add(this);
   // }
 
+  setPosition(x, y) { 
+    this.tilePosition.set(x, y);
+  }
+
+  setDirection(direction) {
+    this.direction = direction;
+  }
 
   moveForward() {
     const newPosition = this.positionInFront();
