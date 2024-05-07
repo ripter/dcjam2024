@@ -18,6 +18,7 @@ window.ThreeD = ThreeD; // for debugging
 //
 // Initalize the 2D Engine
 await UI.init();
+await UI.resize();
 window.ui = UI; // for debugging
 
 
@@ -31,7 +32,7 @@ const level = await Level.Load(`/levels/${levelName}/config.json`);
 window.level = level; // for debugging
 // Render the floor map
 await ThreeD.loadFloorMap(level.floorMap);
-
+await UI.loadLevel(level);
 
 
 //

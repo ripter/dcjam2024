@@ -5,6 +5,7 @@ import {
   Application, 
   Assets,
   Sprite,
+  Graphics,
   Container,
 } from '../../libs/pixi.min.mjs';
 import { Minimap } from './Minimap.mjs';
@@ -27,6 +28,8 @@ class UI {
     this.app = new Application();
     // Create a group to hold all the Entities
     this.entityContainer = new Container();
+    // Create a Minimap
+    this.miniMap = new Minimap();
     // Event listeners
     window.addEventListener('resize', this.resizeAndRerender.bind(this));
   }
@@ -52,12 +55,28 @@ class UI {
     this.app.canvas.id = 'ui-canvas';
     window.gameBody.appendChild(this.app.canvas);
 
+    // Calculate the dimensions for the rectangle
+    const rectWidth = this.app.screen.width / 4; // Right fourth of the width
+    const rectHeight = this.app.screen.height;   // Full height
+    const rectX = this.app.screen.width - rectWidth; // Starting X position
+
+    const graphics = new Graphics();
+    graphics.beginFill(0xFFFFFF, 0.5);
+    graphics.drawRect(rectX, 0, rectWidth, rectHeight);
+    graphics.endFill();
+
+    this.app.stage.addChild(graphics);
+
     // Initalize the minimap and add it to the UI
-    // await this.miniMap.init();
-    // this.app.stage.addChild(this.miniMap.scene);
+    await this.miniMap.init();
+    this.app.stage.addChild(this.miniMap.scene);
 
     // Resize and Render the UI
     // this.resizeAndRerender();
+  }
+
+  async loadLevel(level) {
+    await this.miniMap.loadLevel(level);
   }
 
   /**
@@ -113,6 +132,9 @@ class UI {
       this.screenWidth - miniMapWidth - miniMapPadding, 
       miniMapPadding
     );
+  }
+  async resize() {
+
   }
 
 }

@@ -11,21 +11,10 @@ const DEFAULT_DEF_VALUES = {
 }
 
 /**
- * Source of truth for the game state.
  * Create a new level from a config file.
- * ```
- *     const level = await Level.Load(`/pathToLevel/config.json`);
- * ```
- * 
- * Use the query methods to find entities in the level.
- * ```
- *    const player = level.getEntityByType('player');
- *    const enemies = level.getEntitiesByType('enemy');
- * ```
  */
 export class Level {
   #config;
-  // #entities;
 
   /**
    * Loads a level from the given URL.
@@ -37,15 +26,10 @@ export class Level {
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
-    // this.#entities = [];
     // Make sure all the tileIds are strings.
     this.floorMap = config.floorMap.map(tileId => tileId.toString());
     // Create a Map to store the asset definitions
     this.definitions = new Map();
-    // // Entities that changed during the tick are stored here. 
-    // this.dirtyEntities = new Set();
-    // this.addedEntities = new Set();
-    // this.removedEntities = new Set();
   }
 
   get widthInTiles() {
@@ -54,38 +38,6 @@ export class Level {
   get heightInTiles() {
     return this.#config.gridHeight;
   }
-
-  // getEntities() {
-  //   return [...this.#entities];
-  // }
-  // getEntitiesByType(type) {
-  //   return this.#entities.filter(entity => entity.type === type);
-  // }
-  // getRandomEntityByType(type) {
-  //   const entities = this.getEntitiesByType(type);
-  //   return entities[Math.floor(Math.random() * entities.length)];
-  // }
-  // getEntityByType(type) {
-  //   return this.getEntitiesByType(type)[0] ?? null;
-  // }
-
-
-  // addEntity(entity) {
-  //   entity.level = this; // Set the circular reference.
-  //   this.#entities.push(entity);
-  //   this.addedEntities.add(entity);
-  // }
-  // removeEntity(entity) {
-  //   delete entity.level; // Remove the circular reference.
-  //   const index = this.#entities.indexOf(entity);
-  //   if (index >= 0) {
-  //     this.#entities.splice(index, 1);
-  //   }
-  //   this.removedEntities.add(entity);
-  // }
-  // setDirty(entity) {
-  //   this.dirtyEntities.add(entity);
-  // }
 
   /**
    * Converts an XY coordinate to an index. 
@@ -98,9 +50,6 @@ export class Level {
     const y = Math.floor(index / width);
     return new Vector2(x, y);
   }
-
-
-
 
   /**
    * Asset Definitions from the config are hydrated with default values.
@@ -128,8 +77,6 @@ export class Level {
       });
     });
 
-    // Wait for all models to load
-    // await Promise.all(loadModelsPromises);
 
     // Hydrate the entities from the config
     const loadEntitiesPromises = this.#config.entities.map(async (config) => {
@@ -142,9 +89,8 @@ export class Level {
         return null;
       }
     });
-    // await Promise.all(loadEntitiesPromises);
-    delete this.#config.entities;
 
+    delete this.#config.entities;
     await Promise.all([...loadModelsPromises, ...loadEntitiesPromises]);
   }
 
