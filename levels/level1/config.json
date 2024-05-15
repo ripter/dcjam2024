@@ -30,11 +30,11 @@
   "defs": {
     "0": {
       "model": "assets/models/tile.glb",
-      "sprite": "assets/sprites/tile1.webp"
+      "spriteUrl": "assets/sprites/tile1.webp"
     },
     "2": {
       "model": "assets/models/wall.glb",
-      "sprite": "assets/sprites/wall1.webp"
+      "spriteUrl": "assets/sprites/wall1.webp"
     }, 
     "player": {
       "spriteUrl": "assets/sprites/player.webp"

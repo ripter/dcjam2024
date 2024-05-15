@@ -12,6 +12,7 @@ const DEFAULT_DEF_VALUES = {
 
 /**
  * Create a new level from a config file.
+ * floorMap: Array of tileIds that define the floor of the level. Includes walls, floors, other static objects.
  */
 export class Level {
   #config;
@@ -26,10 +27,8 @@ export class Level {
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
-    // Make sure all the tileIds are strings.
-    this.floorMap = config.floorMap.map(tileId => tileId.toString());
-    // Create a Map to store the asset definitions
-    this.definitions = new Map();
+   this.floorMap = this.#config.floorMap.map(tileId => tileId.toString());
+   this.definitions = new Map(); // populated by loadAssets
   }
 
   get widthInTiles() {
@@ -37,6 +36,21 @@ export class Level {
   }
   get heightInTiles() {
     return this.#config.gridHeight;
+  }
+
+
+  *iterateFloor() {
+    for (let idx=0; idx < this.floorMap.length; idx++) {
+      const tileId = this.floorMap[idx];
+      const definition = this.definitions.get(tileId);
+      const position = this.indexToXY(idx);
+      yield {
+        ...definition,
+        tileId,
+        tileIdx: idx,
+        position,
+      };
+    }
   }
 
   /**

@@ -2,6 +2,7 @@
 
 Now it's a place to play with my homebrew Dungeon Crawler engine. 
 
+This is an *ENGINE* not a *library*. The difference is that an Engine runs the show and expects code to work for it. A library is something you load in your code and use. Engine is the inverse of a Library.
 
 ## Run
 The project is written with module javascript, so the only server requirement is a static server. You can use the server of your choice. I use python3 because it's part of my OS.
