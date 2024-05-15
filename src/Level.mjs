@@ -17,18 +17,24 @@ const DEFAULT_DEF_VALUES = {
 export class Level {
   #config;
 
+
   /**
    * Loads a level from the given URL.
    * @param {string} url 
    */
   constructor(config) {
+    this.minimap = {
+      widthInTiles: 6,
+      heightInTiles: 6,
+      tileSize: 32,
+    };
     this.#config = {
       ...config,
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
-   this.floorMap = this.#config.floorMap.map(tileId => tileId.toString());
-   this.definitions = new Map(); // populated by loadAssets
+    this.floorMap = this.#config.floorMap.map(tileId => tileId.toString());
+    this.definitions = new Map(); // populated by loadAssets
   }
 
   get widthInTiles() {

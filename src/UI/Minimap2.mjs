@@ -27,20 +27,6 @@ export class Minimap {
     return this.scene.position;
   }
 
-  async init() {
-    // Create Sprites for each floor tile
-    const loadPromises = this.#level.floorMap.map(async (tileId, index) => {
-      const definition = this.#level.definitions.get(tileId);
-      const { x, y } = this.#level.indexToXY(index);
-      const sprite = await loadSprite(definition.sprite, this.tileSize);
-      sprite.tilePosition = new Vector2(x, y);
-      this.tileMap.addChild(sprite);
-      return sprite;
-    });
-
-    // Wait for all models to load
-    return await Promise.all(loadPromises);
-  }
 
 
   async addEntity(entity) {

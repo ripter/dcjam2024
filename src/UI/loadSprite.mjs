@@ -5,6 +5,6 @@ export async function loadSprite(url, tileSize) {
   const sprite = new Sprite(texture);
   sprite.width = tileSize;
   sprite.height = tileSize;
-  sprite.anchor.set(0.5);
+  // sprite.anchor.set(0.5);
   return sprite;
 }

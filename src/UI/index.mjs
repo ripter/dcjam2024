@@ -70,13 +70,15 @@ class UI {
     // Initalize the minimap and add it to the UI
     await this.miniMap.init();
     this.app.stage.addChild(this.miniMap.scene);
+    this.miniMap.scene.position.set(100, 0);
 
-    // Resize and Render the UI
     // this.resizeAndRerender();
   }
 
   async loadLevel(level) {
     await this.miniMap.loadLevel(level);
+    // Tell the minimap to resize everything to fit the new level.
+    this.miniMap.resize(level);
   }
 
   /**
@@ -123,9 +125,6 @@ class UI {
     // tell Pixi to resize
     this.app.resize();
 
-    const miniMapWidth = 0|(this.screenWidth / 5);
-    const miniMapHeight = 0|(this.screenHeight / 5);
-    const miniMapPadding = Math.min(miniMapWidth, miniMapHeight) / 10;
 
     this.miniMap.resize(miniMapWidth, miniMapHeight);
     this.miniMap.position.set(
@@ -133,6 +132,17 @@ class UI {
       miniMapPadding
     );
   }
+
+  async resizeMiniMap() {
+    const miniMapWidth = 0|(this.screenWidth / 5);
+    const miniMapHeight = 0|(this.screenHeight / 5);
+    const miniMapPadding = Math.min(miniMapWidth, miniMapHeight) / 10;
+
+    console.log('miniMapWidth', miniMapWidth);
+    console.log('miniMapHeight', miniMapHeight);
+    console.log('miniMapPadding', miniMapPadding);
+  }
+
   async resize() {
 
   }
