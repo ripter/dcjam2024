@@ -29,8 +29,6 @@ class UI {
     this.entityContainer = new Container();
     // Create a Minimap
     this.miniMap = new Minimap();
-    // Event listeners
-    window.addEventListener('resize', this.resizeAndRerender.bind(this));
   }
 
   get screenWidth() {
@@ -69,7 +67,7 @@ class UI {
     // Initalize the minimap and add it to the UI
     await this.miniMap.init();
     this.app.stage.addChild(this.miniMap.scene);
-    this.miniMap.scene.position.set(100, 0);
+    // this.miniMap.scene.position.set(100, 0);
   }
 
   async loadLevel(level) {
@@ -98,6 +96,12 @@ class UI {
     // Calculate the Minimap tile size based on the screen size
     const miniMapTileSize = Math.min(this.screenWidth, this.screenHeight) / 28;
     this.miniMap.resize(miniMapTileSize, level);
+    // Position the MiniMap on the right side of the screen
+    const miniMapPadding = Math.max(miniMapTileSize / 2, 0);
+    this.miniMap.scene.position.set(
+      this.screenWidth - this.miniMap.scene.width - miniMapPadding, 
+      miniMapPadding
+    );
   }
 
 

@@ -37,7 +37,6 @@ UI.resize();
 
 
 window.addEventListener('resize', () => {
-  console.log('resisze the window!')
   UI.resize();
 });
 
