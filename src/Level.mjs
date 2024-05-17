@@ -23,17 +23,19 @@ export class Level {
    * @param {string} url 
    */
   constructor(config) {
-    this.minimap = {
-      widthInTiles: 6,
-      heightInTiles: 6,
-      tileSize: 32,
-    };
     this.#config = {
       ...config,
       gridWidth: parseInt(config.gridWidth, 10),
       gridHeight: parseInt(config.gridHeight, 10),
     };
+    // Convert the floorMap to an array of strings
     this.floorMap = this.#config.floorMap.map(tileId => tileId.toString());
+    // Configure the minimap
+    this.miniMap = {
+      widthInTiles: config.minimapWidth,
+      heightInTiles: config.minimapHeight,
+      tileSize: 24,
+    };
     this.definitions = new Map(); // populated by loadAssets
   }
 

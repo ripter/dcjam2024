@@ -3,10 +3,8 @@
 // It exports UI, please initalize the UI with the init method before using it.
 import { 
   Application, 
-  Assets,
-  Sprite,
-  Graphics,
   Container,
+  Graphics,
 } from '../../libs/pixi.min.mjs';
 import { Minimap } from './Minimap.mjs';
 import { DEFAULT_TILE_SIZE } from '../consts.mjs';
@@ -20,6 +18,7 @@ import { loadSprite } from './loadSprite.mjs';
  * This class is a singleton and should be initalized with the init method at the start of the game.
  */
 class UI {
+  #level
   /**
    * Creates a new UI for the level.
    */
@@ -71,14 +70,11 @@ class UI {
     await this.miniMap.init();
     this.app.stage.addChild(this.miniMap.scene);
     this.miniMap.scene.position.set(100, 0);
-
-    // this.resizeAndRerender();
   }
 
   async loadLevel(level) {
+    this.#level = level;
     await this.miniMap.loadLevel(level);
-    // Tell the minimap to resize everything to fit the new level.
-    this.miniMap.resize(level);
   }
 
   /**
@@ -91,61 +87,19 @@ class UI {
     return sprite;
   }
 
-  // async loadPlayerSprite() {
-  //   const srcTexture = this.#level.defs.get('player').sprite;
-  //   const texture = await Assets.load(srcTexture);
-  //   const player = new Sprite(texture);
-  //   const scale = this.tileSize / player.width; // TODO: move this to resizeAndRerender
-
-  //   player.anchor.set(0.5, 0.5);
-  //   player.scale.set(scale, scale);
-  //   return player;
-  // }
-
-
-  // async update() {
-  //   // Clear removed entities
-  //   for (const entity of this.#level.removedEntities) {
-  //     await this.miniMap.removeEntity(entity);
-  //   }
-  //   // Add new entities
-  //   for (const entity of this.#level.addedEntities) {
-  //     await this.miniMap.addEntity(entity);
-  //   }
-  //   // Pass the dirty entities to our sub-components.
-  //   for (const entity of this.#level.dirtyEntities) {
-  //     await this.miniMap.updateEntity(entity);
-  //   }
-  // }
-
   /**
-   * Resizes the UI and re-renders the UI.
+   * Resizes the UI based on the screen size.
    */
-  resizeAndRerender() {
+  async resize() {
+    const level = this.#level;
+    if (!level) { return; }
     // tell Pixi to resize
     this.app.resize();
-
-
-    this.miniMap.resize(miniMapWidth, miniMapHeight);
-    this.miniMap.position.set(
-      this.screenWidth - miniMapWidth - miniMapPadding, 
-      miniMapPadding
-    );
+    // Calculate the Minimap tile size based on the screen size
+    const miniMapTileSize = Math.min(this.screenWidth, this.screenHeight) / 28;
+    this.miniMap.resize(miniMapTileSize, level);
   }
 
-  async resizeMiniMap() {
-    const miniMapWidth = 0|(this.screenWidth / 5);
-    const miniMapHeight = 0|(this.screenHeight / 5);
-    const miniMapPadding = Math.min(miniMapWidth, miniMapHeight) / 10;
-
-    console.log('miniMapWidth', miniMapWidth);
-    console.log('miniMapHeight', miniMapHeight);
-    console.log('miniMapPadding', miniMapPadding);
-  }
-
-  async resize() {
-
-  }
 
 }
 

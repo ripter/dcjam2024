@@ -33,6 +33,13 @@ window.level = level; // for debugging
 // Render the floor map
 await ThreeD.loadFloorMap(level.floorMap);
 await UI.loadLevel(level);
+UI.resize();
+
+
+window.addEventListener('resize', () => {
+  console.log('resisze the window!')
+  UI.resize();
+});
 
 
 //
